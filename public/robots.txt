@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# LLM and AI agent documentation
+# See /llms.txt for technical context, unit conversion standards, and API structure.

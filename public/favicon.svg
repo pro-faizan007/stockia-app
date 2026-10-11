@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+  <!-- Background Badge -->
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <!-- Wheat Stalk Graphic -->
+  <g fill="none" stroke="#090d16" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 54V14" />
+    <!-- Wheat grains left -->
+    <path d="M32 20C28 17 22 18 20 22C22 26 28 26 32 24" fill="#090d16" />
+    <path d="M32 28C28 25 22 26 20 30C22 34 28 34 32 32" fill="#090d16" />
+    <path d="M32 36C28 33 22 34 20 38C22 42 28 42 32 40" fill="#090d16" />
+    <!-- Wheat grains right -->
+    <path d="M32 16C36 13 42 14 44 18C42 22 36 22 32 20" fill="#090d16" />
+    <path d="M32 24C36 21 42 22 44 26C42 30 36 30 32 28" fill="#090d16" />
+    <path d="M32 32C36 29 42 30 44 34C42 38 36 38 32 36" fill="#090d16" />
+    <!-- Top Awns / grain tip -->
+    <path d="M32 14L32 8" />
+    <path d="M32 14L26 8" />
+    <path d="M32 14L38 8" />
+  </g>
+</svg>

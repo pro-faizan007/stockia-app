@@ -24,6 +24,8 @@ export type VisitStatus = 'visited' | 'bargaining' | 'purchased' | 'skipped';
 
 export type PriceUnit = 'bori' | 'kg' | 'mund';
 
+export type AppTheme = 'dark' | 'light' | 'high-contrast';
+
 export interface ShopVisitNote {
   id: string;
   date: string; // YYYY-MM-DD

@@ -11,8 +11,9 @@ import {
   Layers,
   Sun,
   Moon,
+  Zap,
 } from 'lucide-react';
-import { CropConfig } from '../types';
+import { CropConfig, AppTheme } from '../types';
 
 interface HeaderProps {
   activeTab: 'combine' | 'visits' | 'godam' | 'calculator' | 'fluctuations' | 'settings';
@@ -22,7 +23,7 @@ interface HeaderProps {
   crops: CropConfig[];
   onOpenNewVisit: () => void;
   onOpenNewBatch: () => void;
-  theme: 'dark' | 'light';
+  theme: AppTheme;
   toggleTheme: () => void;
 }
 
@@ -43,19 +44,16 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
           {/* Logo & Identity */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-md shadow-amber-500/20 ring-1 ring-amber-400/30 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+            <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-md shadow-amber-500/20 ring-1 ring-amber-400/30 shrink-0">
               <Wheat className="w-4 h-4 sm:w-6 sm:h-6 text-slate-950 font-bold" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-black text-base sm:text-xl tracking-tight text-white whitespace-nowrap">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="font-black text-sm sm:text-xl tracking-tight text-white whitespace-nowrap">
                   Mandi<span className="text-amber-400">Stockia</span>
                 </span>
-                <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 font-medium hidden xs:inline-block">
-                  منڈی سٹاکیہ
-                </span>
-                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
+                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0 hidden sm:inline-block">
                   PKR / من
                 </span>
               </div>
@@ -65,55 +63,71 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Quick Action Buttons (Optimized for small mobile screens) */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Global Theme Toggle (Dark vs High-Visibility Light Mode for Outdoor Grain Market Glare) */}
+          {/* Quick Action Buttons (Optimized & decreased for small mobile screens - no overflow/side cut) */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Global Theme Toggle (Cycles Dark -> Light -> High Contrast for Outdoor Grain Market Glare) */}
             <button
               onClick={toggleTheme}
-              className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 sm:py-2 text-xs font-bold rounded-lg transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap border ${
+              className={`flex items-center justify-center p-1.5 sm:px-2.5 sm:py-2 text-xs font-bold rounded-lg transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap border ${
                 theme === 'dark'
                   ? 'bg-slate-800/90 hover:bg-slate-700 text-amber-300 border-slate-700/80 hover:border-amber-400/50'
+                  : theme === 'high-contrast'
+                  ? 'bg-amber-400 hover:bg-amber-300 text-slate-950 border-2 border-slate-950 font-black shadow-md'
                   : 'bg-amber-100 hover:bg-amber-200 text-amber-950 border-amber-300'
               }`}
               title={
                 theme === 'dark'
-                  ? 'کھلی منڈی / دھوپ موڈ پر سوئچ کریں (Switch to High-Contrast Light Mode for bright sunlight glare)'
-                  : 'نائٹ / ڈارک موڈ پر سوئچ کریں (Switch to Dark Mode)'
+                  ? 'لائٹ موڈ پر جائیں (Switch to Clean Light Mode)'
+                  : theme === 'light'
+                  ? 'دھوپ / ہائی کنٹراسٹ موڈ پر جائیں (Switch to High Contrast Glare Mode)'
+                  : 'نائٹ / ڈارک موڈ پر جائیں (Switch to Dark Mode)'
               }
               aria-label="Toggle theme mode"
             >
-              {theme === 'dark' ? (
+              {theme === 'dark' && (
                 <>
-                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 shrink-0 animate-pulse" />
-                  <span className="hidden xs:inline">دھوپ موڈ</span>
-                  <span className="hidden lg:inline text-[10px] opacity-75 font-normal">(Light)</span>
+                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 shrink-0" />
+                  <span className="hidden sm:inline ml-1">نائٹ</span>
+                  <span className="hidden lg:inline text-[10px] opacity-75 font-normal ml-0.5">(Dark)</span>
                 </>
-              ) : (
+              )}
+              {theme === 'light' && (
                 <>
-                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-700 shrink-0" />
-                  <span className="hidden xs:inline">نائٹ موڈ</span>
-                  <span className="hidden lg:inline text-[10px] opacity-75 font-normal">(Dark)</span>
+                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600 shrink-0" />
+                  <span className="hidden sm:inline ml-1">لائٹ</span>
+                  <span className="hidden lg:inline text-[10px] opacity-75 font-normal ml-0.5">(Light)</span>
+                </>
+              )}
+              {theme === 'high-contrast' && (
+                <>
+                  <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-950 shrink-0 fill-current" />
+                  <span className="hidden sm:inline ml-1">دھوپ</span>
+                  <span className="hidden lg:inline text-[10px] font-black ml-0.5">(Hi-Con)</span>
                 </>
               )}
             </button>
 
+            {/* Shop Visit Note Button (Compact on mobile) */}
             <button
               onClick={onOpenNewVisit}
-              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
               title="Record shop visit note"
             >
               <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span>دکان وزٹ</span>
+              <span className="sm:hidden">وزٹ</span>
+              <span className="hidden sm:inline">دکان وزٹ</span>
               <span className="hidden lg:inline text-[11px] opacity-80 font-normal">(Note)</span>
             </button>
 
+            {/* Warehouse Stock Batch Button (Compact on mobile) */}
             <button
               onClick={onOpenNewBatch}
-              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
               title="Record bought lot into warehouse"
             >
               <PackagePlus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span>خرید مال</span>
+              <span className="sm:hidden">خرید</span>
+              <span className="hidden sm:inline">خرید مال</span>
               <span className="hidden lg:inline text-[11px] opacity-80 font-normal">(Stock)</span>
             </button>
           </div>

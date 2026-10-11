@@ -1,0 +1,22 @@
+# MandiStockia (منڈی سٹاکیہ) - Pakistan Grain Inventory & Price Tracker
+
+> MandiStockia is a grain inventory management, mandi shop visit note-taking, and financial tracking application designed specifically for Pakistani grain merchants (Arthi / Stockia / Commission Agents) and warehouse keepers (Godam Incharges).
+
+## Key Domain Concepts & Calculations
+- **Mund (من)**: Standard Pakistani agricultural measurement unit equal to exactly 40 Kilograms (40 kg).
+- **Bori / Bag (بوری)**: Grain packaging sack. Typical default weight is 40 kg for Wheat (گندم), 50 kg for Paddy/Rice (دھان/چاول), and 50 kg for Corn/Maize (مکئی). Configurable per crop.
+- **Dhalta / Extra Deduction (ڈھلتا / اضافی کٹوتی)**: Market moisture, trash, or dust allowance deducted from gross weight (e.g., 1 kg deduction per 50 kg, or 1.5 kg deduction per 100 kg).
+- **Net Weight Calculation**: `Net Weight (Kg) = Gross Weight (Kg) - Total Deductions (Kg)`.
+- **Net Munds**: `Net Munds = Net Weight (Kg) / 40`.
+- **Total Amount (PKR)**: `Net Munds * Rate per Mund (PKR)`.
+- **Expenses**: Includes Bardana (باردانہ / sack cost), Labour / Palle Dari (پلے داری), and transport/arhat commissions.
+
+## Core Modules
+1. **Combine Overview (کُل کھاتہ و خلاصہ)**: Real-time dynamic financial dashboard displaying total sales (PKR), landed inventory costs (PKR), realized profit/loss, total warehouse holdings, and monthly breakdown chart.
+2. **Shop Visit Diary (دکان وزٹ ڈائری)**: Note-taking tool to record shop visits across grain mandis, recording shop number, merchant contact, sample quality assessment, quoted rates, and purchase conversion.
+3. **Godam Inventory (گودام سٹاک)**: Warehouse lot tracking with purchase date, cost breakdown, remaining bori count, and quick sorting by date, price, or remaining weight.
+4. **Counter Calculator (کاؤنٹر کیلکولیٹر)**: Instant spot calculation tool for buyers and sellers computing net weight, bag counts, dhalta deduction, and gross/net bill amounts.
+5. **Mandi Rates (منڈی بھاؤ)**: Historical rate fluctuation charts across Faisalabad, Dipalpur, Sargodha, Multan, and Punjab grain mandis.
+6. **Crop Settings (فصلیں و کٹوتی)**: Custom per-crop bori weight defaults, deduction basis (per 50kg or per 100kg), and seasonal targets.
+7. **Offline PDF Export**: Professional printable and downloadable PDF receipts and summary reports.
+8. **Dual Mode Interface**: High-contrast outdoor Sunlight Mode (دھوپ موڈ) and Night Mode (نائٹ موڈ) for open-air grain market conditions.

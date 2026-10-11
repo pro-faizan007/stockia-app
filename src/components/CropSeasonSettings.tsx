@@ -9,8 +9,12 @@ import {
   Trash2,
   HelpCircle,
   PackageCheck,
+  Sun,
+  Moon,
+  Zap,
+  Check,
 } from 'lucide-react';
-import { CropConfig } from '../types';
+import { CropConfig, AppTheme } from '../types';
 import { formatPKR } from '../utils/mandiCalculations';
 
 interface CropSeasonSettingsProps {
@@ -18,6 +22,8 @@ interface CropSeasonSettingsProps {
   onUpdateCrop: (crop: CropConfig) => void;
   onAddCrop: (crop: CropConfig) => void;
   onDeleteCrop: (id: string) => void;
+  theme?: AppTheme;
+  setTheme?: (theme: AppTheme) => void;
 }
 
 export const CropSeasonSettings: React.FC<CropSeasonSettingsProps> = ({
@@ -25,6 +31,8 @@ export const CropSeasonSettings: React.FC<CropSeasonSettingsProps> = ({
   onUpdateCrop,
   onAddCrop,
   onDeleteCrop,
+  theme = 'dark',
+  setTheme,
 }) => {
   const [editingCrops, setEditingCrops] = useState<Record<string, CropConfig>>(() => {
     const map: Record<string, CropConfig> = {};
@@ -138,6 +146,105 @@ export const CropSeasonSettings: React.FC<CropSeasonSettingsProps> = ({
           پاکستان کی غلہ منڈیوں میں گندم کی بوری عموماً <strong>40 کلو</strong> یا 100 کلو ہوتی ہے اور کٹوتی <strong>فی 50 کلو پر 1 کلو</strong> لی جاتی ہے، جبکہ چاول (دھان) کی بوری <strong>50 کلو</strong> ہوتی ہے اور کٹوتی <strong>فی 100 کلو پر 1.5 کلو</strong> تک ہوتی ہے۔ یہاں ہر فصل کی سیٹنگ مکمل آزاد ہے، تاکہ کھاتہ اور سٹاک بالکل درست رہے۔
         </p>
       </div>
+
+      {/* Theme & Outdoor Visibility Display Selector */}
+      {setTheme && (
+        <div className="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3.5 shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-amber-400" />
+                <h2 className="text-sm sm:text-base font-bold text-white">
+                  تھیم و ڈسپلے موڈ (App Theme & Outdoor Visibility)
+                </h2>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                کھلی غلہ منڈی کی تیز دھوپ اور چکاچوند (Glare) یا رات کے وقت کے لیے پسندیدہ تھیم منتخب کریں۔
+              </p>
+            </div>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 w-fit">
+              فعال: {theme === 'dark' ? 'نائٹ موڈ' : theme === 'light' ? 'لائٹ موڈ' : 'ہائی کنٹراسٹ موڈ'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* 1. Dark Mode */}
+            <button
+              type="button"
+              onClick={() => setTheme('dark')}
+              className={`p-3.5 rounded-xl border text-right transition-all cursor-pointer relative flex flex-col justify-between gap-2 ${
+                theme === 'dark'
+                  ? 'bg-slate-800 border-amber-400 ring-2 ring-amber-400/40 shadow-lg'
+                  : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-amber-400">
+                    <Moon className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white">نائٹ / ڈارک موڈ</span>
+                </div>
+                {theme === 'dark' && <Check className="w-4 h-4 text-amber-400 shrink-0" />}
+              </div>
+              <p className="text-[11px] text-slate-400">
+                گہرا سلیٹ پس منظر، بیوپاریوں کے لیے شام اور انڈور دکان میں آنکھوں پر ہلکا۔
+              </p>
+              <span className="text-[10px] text-amber-300 font-mono font-semibold">Dark Slate (Default)</span>
+            </button>
+
+            {/* 2. Light Mode */}
+            <button
+              type="button"
+              onClick={() => setTheme('light')}
+              className={`p-3.5 rounded-xl border text-right transition-all cursor-pointer relative flex flex-col justify-between gap-2 ${
+                theme === 'light'
+                  ? 'bg-amber-50/20 border-amber-500 ring-2 ring-amber-500/40 shadow-lg'
+                  : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-500">
+                    <Sun className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white">ڈے / لائٹ موڈ</span>
+                </div>
+                {theme === 'light' && <Check className="w-4 h-4 text-amber-500 shrink-0" />}
+              </div>
+              <p className="text-[11px] text-slate-400">
+                صاف ستھرا سفید کارڈز اور ٹیکسٹ، دن کے وقت شفاف اور خوبصورت ڈیزائن۔
+              </p>
+              <span className="text-[10px] text-amber-400 font-mono font-semibold">Clean Day Light</span>
+            </button>
+
+            {/* 3. High Contrast Mode */}
+            <button
+              type="button"
+              onClick={() => setTheme('high-contrast')}
+              className={`p-3.5 rounded-xl border text-right transition-all cursor-pointer relative flex flex-col justify-between gap-2 ${
+                theme === 'high-contrast'
+                  ? 'bg-yellow-400/10 border-yellow-400 ring-2 ring-yellow-400 shadow-lg'
+                  : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-yellow-400 flex items-center justify-center text-black">
+                    <Zap className="w-4 h-4 fill-black" />
+                  </div>
+                  <span className="text-xs font-bold text-white">دھوپ و قوی کنٹراسٹ</span>
+                </div>
+                {theme === 'high-contrast' && <Check className="w-4 h-4 text-yellow-400 shrink-0" />}
+              </div>
+              <p className="text-[11px] text-slate-400">
+                کھلی منڈی میں براہ راست تیز دھوپ (Outdoor Glare) کے لیے بولڈ بارڈرز اور گہرا کالا فونٹ۔
+              </p>
+              <span className="text-[10px] text-yellow-400 font-mono font-bold">Ultra High-Contrast</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Crop Cards List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

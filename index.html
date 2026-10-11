@@ -1,20 +1,67 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MandiStockia - Pakistan Grain Inventory & Price Tracker</title>
-    <meta name="description" content="Professional grain stock management, shop visit notes, and mandi rate fluctuation tracker for Pakistani grain traders (Stockia / Arthi) with Mund, Bori, and Dhalta calculations." />
-    <meta property="og:title" content="MandiStockia - Pakistan Grain Inventory & Price Tracker" />
-    <meta property="og:description" content="Professional grain stock management, shop visit notes, and mandi rate fluctuation tracker for Pakistani grain traders (Stockia / Arthi) with Mund, Bori, and Dhalta calculations." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>MandiStockia – Pakistan Grain Mandi & Stock Manager</title>
+    <meta name="description" content="Track grain stock, shop visits, and mandi rates in Pakistan. Real-time PKR calculations for Mund, Bori, Dhalta deductions, and inventory reports." />
+    <meta name="keywords" content="Mandi, Grain Stock, Pakistan Mandi, Arthi, Galla Mandi, Wheat Rate, Rice Paddy, Mund, Bori, Dhalta, Faisalabad Mandi, Multan Mandi" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#090d16" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:site_name" content="MandiStockia" />
+    <meta property="og:title" content="MandiStockia – Pakistan Grain Mandi & Stock Manager" />
+    <meta property="og:description" content="Track grain stock, shop visits, and mandi rates in Pakistan. Real-time PKR calculations for Mund, Bori, Dhalta deductions, and inventory reports." />
+    <meta property="og:locale" content="en_PK" />
+    <meta property="og:image" content="/favicon.svg" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="MandiStockia – Pakistan Grain Mandi & Stock Manager" />
+    <meta name="twitter:description" content="Track grain stock, shop visits, and mandi rates in Pakistan. Real-time PKR calculations for Mund, Bori, and Dhalta deductions." />
+    <meta name="twitter:image" content="/favicon.svg" />
+
+    <!-- LLM & Semantic Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "MandiStockia",
+      "alternateName": "منڈی سٹاکیہ",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "description": "Grain stock management, shop visit notes, and mandi rate fluctuation tracker for Pakistani grain traders (Stockia / Arthi) with Mund, Bori, and Dhalta calculations.",
+      "inLanguage": ["en", "ur"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "PKR"
+      },
+      "featureList": [
+        "Mund (40kg) and custom Bori unit conversions",
+        "Crop-specific extra moisture and dhalta deductions",
+        "Mandi shop visit diary with sample quality grading",
+        "Real-time financial dashboard in PKR",
+        "Warehouse godam lot tracking with quick sorting by date, price, and weight",
+        "One-click PDF financial & inventory export",
+        "High-contrast anti-glare sunlight mode for open-air grain markets"
+      ]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-slate-900 text-slate-100 antialiased min-h-screen selection:bg-amber-500/30 selection:text-amber-200">
-    <div id="root"></div>
+  <body class="bg-slate-900 text-slate-100 antialiased min-h-screen selection:bg-amber-500/30 selection:text-amber-200 overflow-x-hidden">
+    <div id="root" class="min-h-screen flex flex-col overflow-x-hidden"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

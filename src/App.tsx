@@ -16,7 +16,7 @@ import {
   INITIAL_STOCK_BATCHES,
   INITIAL_VISIT_NOTES,
 } from './utils/mockData';
-import { CropConfig, MandiRateHistory, SaleRecord, ShopVisitNote, StockBatch } from './types';
+import { CropConfig, MandiRateHistory, SaleRecord, ShopVisitNote, StockBatch, AppTheme } from './types';
 import {
   RotateCcw,
   Layers,
@@ -95,11 +95,12 @@ export default function App() {
     localStorage.setItem('mandi_history_v1', JSON.stringify(rateHistory));
   }, [rateHistory]);
 
-  // Global Theme (Dark / Light for Outdoor Grain Market Glare)
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+  // Global Theme: 'dark' (Default), 'light' (Day), 'high-contrast' (Outdoor Mandi Glare)
+  const [theme, setTheme] = useState<AppTheme>(() => {
     try {
-      const saved = localStorage.getItem('mandi_theme_v1');
-      return saved === 'light' ? 'light' : 'dark';
+      const saved = localStorage.getItem('mandi_theme_v1') as AppTheme | null;
+      if (saved === 'light' || saved === 'high-contrast') return saved;
+      return 'dark';
     } catch {
       return 'dark';
     }
@@ -108,11 +109,12 @@ export default function App() {
   useEffect(() => {
     try {
       localStorage.setItem('mandi_theme_v1', theme);
+      document.documentElement.classList.remove('dark', 'light-mode', 'high-contrast-mode');
       if (theme === 'light') {
         document.documentElement.classList.add('light-mode');
-        document.documentElement.classList.remove('dark');
+      } else if (theme === 'high-contrast') {
+        document.documentElement.classList.add('light-mode', 'high-contrast-mode');
       } else {
-        document.documentElement.classList.remove('light-mode');
         document.documentElement.classList.add('dark');
       }
     } catch (e) {
@@ -121,7 +123,11 @@ export default function App() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => {
+      if (prev === 'dark') return 'light';
+      if (prev === 'light') return 'high-contrast';
+      return 'dark';
+    });
   };
 
   // 2. Navigation State
@@ -354,102 +360,104 @@ export default function App() {
             onUpdateCrop={handleUpdateCrop}
             onAddCrop={handleAddCrop}
             onDeleteCrop={handleDeleteCrop}
+            theme={theme}
+            setTheme={setTheme}
           />
         )}
       </main>
 
       {/* Mobile Sticky Bottom Navigation Bar (Thumb-friendly & high-contrast) */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/98 backdrop-blur-lg border-t border-slate-800/90 px-1.5 py-1.5 flex justify-around items-center shadow-2xl safe-bottom">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/98 backdrop-blur-lg border-t border-slate-800/90 px-1 py-1.5 flex justify-around items-center shadow-2xl safe-bottom">
         <button
           onClick={() => setActiveTab('combine')}
-          className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
+          className={`flex-1 min-w-0 flex flex-col items-center gap-0.5 py-1 px-0.5 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
             activeTab === 'combine'
               ? 'text-amber-400 bg-amber-500/15 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Layers className="w-4 h-4" />
-          <span>کھاتہ</span>
+          <Layers className="w-4 h-4 shrink-0" />
+          <span className="truncate w-full text-center">کھاتہ</span>
         </button>
 
         <button
           onClick={() => setActiveTab('visits')}
-          className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
+          className={`flex-1 min-w-0 flex flex-col items-center gap-0.5 py-1 px-0.5 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
             activeTab === 'visits'
               ? 'text-amber-400 bg-amber-500/15 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <BookOpen className="w-4 h-4" />
-          <span>وزٹ نوٹ</span>
+          <BookOpen className="w-4 h-4 shrink-0" />
+          <span className="truncate w-full text-center">وزٹ نوٹ</span>
         </button>
 
         <button
           onClick={() => setActiveTab('godam')}
-          className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
+          className={`flex-1 min-w-0 flex flex-col items-center gap-0.5 py-1 px-0.5 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
             activeTab === 'godam'
               ? 'text-amber-400 bg-amber-500/15 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Warehouse className="w-4 h-4" />
-          <span>گودام</span>
+          <Warehouse className="w-4 h-4 shrink-0" />
+          <span className="truncate w-full text-center">گودام</span>
         </button>
 
         <button
           onClick={() => setActiveTab('calculator')}
-          className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
+          className={`flex-1 min-w-0 flex flex-col items-center gap-0.5 py-1 px-0.5 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
             activeTab === 'calculator'
               ? 'text-amber-400 bg-amber-500/15 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Calculator className="w-4 h-4" />
-          <span>کیلکولیٹر</span>
+          <Calculator className="w-4 h-4 shrink-0" />
+          <span className="truncate w-full text-center">کیلکولیٹر</span>
         </button>
 
         <button
           onClick={() => setActiveTab('fluctuations')}
-          className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
+          className={`flex-1 min-w-0 flex flex-col items-center gap-0.5 py-1 px-0.5 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
             activeTab === 'fluctuations'
               ? 'text-amber-400 bg-amber-500/15 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <TrendingUp className="w-4 h-4" />
-          <span>بھاؤ</span>
+          <TrendingUp className="w-4 h-4 shrink-0" />
+          <span className="truncate w-full text-center">بھاؤ</span>
         </button>
 
         <button
           onClick={() => setActiveTab('settings')}
-          className={`flex-1 flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
+          className={`flex-1 min-w-0 flex flex-col items-center gap-0.5 py-1 px-0.5 rounded-xl text-[10px] font-bold cursor-pointer transition-all active:scale-95 ${
             activeTab === 'settings'
               ? 'text-amber-400 bg-amber-500/15 shadow-sm'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Sliders className="w-4 h-4" />
-          <span>سیٹنگز</span>
+          <Sliders className="w-4 h-4 shrink-0" />
+          <span className="truncate w-full text-center">سیٹنگز</span>
         </button>
       </nav>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+      {/* Footer (Full clearance above fixed mobile bottom menu) */}
+      <footer className="border-t border-slate-800/80 bg-slate-900/60 pt-6 pb-28 sm:pb-8 text-center text-xs text-slate-400 mt-auto">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-slate-300">MandiStockia</span>
+          <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+            <span className="font-extrabold text-white">MandiStockia</span>
             <span>•</span>
-            <span>غلہ منڈی سٹاک، دکان وزٹ و ڈھلتا حساب کتاب ایپ (پاکستان)</span>
+            <span className="text-slate-400">غلہ منڈی سٹاک، دکان وزٹ و ڈھلتا حساب کتاب ایپ (پاکستان)</span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>1 من = 40 کلو • PKR (₨)</span>
+          <div className="flex items-center gap-4 text-[11px] flex-wrap justify-center">
+            <span className="font-mono text-slate-400">1 من = 40 کلو • PKR (₨)</span>
             <button
               onClick={handleResetData}
-              className="flex items-center gap-1 text-slate-500 hover:text-amber-400 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 text-slate-300 hover:text-amber-300 transition-colors cursor-pointer active:scale-95 shadow-sm"
               title="نمونہ منڈی ڈیٹا دوبارہ لوڈ کریں"
             >
-              <RotateCcw className="w-3 h-3" />
+              <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
               <span>ری سیٹ سیمپل ڈیٹا</span>
             </button>
           </div>
