@@ -110,6 +110,12 @@ export const ShopVisitDiary: React.FC<ShopVisitDiaryProps> = ({
     const crop = crops.find((c) => c.id === visit.cropId);
     const margin = (visit.sellingPriceInMarketPerMund || 0) - (visit.ratePerMund || 0);
 
+    const pUnit = (visit.purchasePricePerUnit ?? visit.ratePerMund ?? 0).toLocaleString();
+    const rMund = (visit.ratePerMund ?? 0).toLocaleString();
+    const sMund = (visit.sellingPriceInMarketPerMund ?? 0).toLocaleString();
+    const mMargin = (margin ?? 0).toLocaleString();
+    const tVal = (visit.totalValuePkr ?? 0).toLocaleString();
+
     const text = `📝 *منڈی دکان وزٹ نوٹ (Mandi Shop Visit)*
 -----------------------------------
 🏢 *دکان نمبر:* ${visit.shopNo}
@@ -117,13 +123,13 @@ export const ShopVisitDiary: React.FC<ShopVisitDiaryProps> = ({
 📍 *منڈی:* ${visit.mandiName}
 🌾 *فصل و ورائٹی:* ${crop?.urduName || ''} - ${visit.cropVariety}
 ⭐ *کوالٹی جائزہ:* ${QUALITY_LABELS[visit.stockQuality]?.ur || visit.stockQuality}
-${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` : ''}${visit.moisturePercent ? `💧 *نمی:* ${visit.moisturePercent}%\n` : ''}💰 *خرید قیمت:* ₨ ${visit.purchasePricePerUnit.toLocaleString()} (${visit.purchasePriceUnit === 'bori' ? 'فی بوری' : visit.purchasePriceUnit === 'kg' ? 'فی کلو' : 'فی من'})
-📊 *مساوی ریٹ فی من:* ₨ ${visit.ratePerMund.toLocaleString()} /من
-📈 *مقامی منڈی فروخت ریٹ:* ₨ ${(visit.sellingPriceInMarketPerMund || 0).toLocaleString()} /من
-🔥 *متوقع منافع فرق:* ₨ ${margin.toLocaleString()} /من
-📦 *دستیاب مقدار:* ${visit.quantityBags} بوری (${visit.quantityMunds} من)
+${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` : ''}${visit.moisturePercent ? `💧 *نمی:* ${visit.moisturePercent}%\n` : ''}💰 *خرید قیمت:* ₨ ${pUnit} (${visit.purchasePriceUnit === 'bori' ? 'فی بوری' : visit.purchasePriceUnit === 'kg' ? 'فی کلو' : 'فی من'})
+📊 *مساوی ریٹ فی من:* ₨ ${rMund} /من
+📈 *مقامی منڈی فروخت ریٹ:* ₨ ${sMund} /من
+🔥 *متوقع منافع فرق:* ₨ ${mMargin} /من
+📦 *دستیاب مقدار:* ${visit.quantityBags || 0} بوری (${visit.quantityMunds || 0} من)
 ⚖️ *اضافی کٹوتی:* ${visit.deductionKg || 1} کلو فی ${visit.deductionBaseKg || 50} کلو (کل کٹوتی: ${visit.totalDeductionKg || 0} کلو)
-💵 *کل تخمینہ رقم:* ₨ ${visit.totalValuePkr.toLocaleString()}
+💵 *کل تخمینہ رقم:* ₨ ${tVal}
 📌 *نوٹس:* ${visit.notes || '—'}`;
 
     navigator.clipboard.writeText(text);
@@ -371,7 +377,7 @@ ${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` 
                         خرید قیمت (Purchase Price)
                       </span>
                       <span className="text-sm sm:text-base font-extrabold text-amber-400">
-                        ₨ {visit.purchasePricePerUnit.toLocaleString()}{' '}
+                        ₨ {(visit.purchasePricePerUnit ?? visit.ratePerMund ?? 0).toLocaleString()}{' '}
                         <span className="text-[10px] font-normal text-slate-300">
                           ({visit.purchasePriceUnit === 'bori' ? 'فی بوری' : visit.purchasePriceUnit === 'kg' ? 'فی کلو' : 'فی من'})
                         </span>
@@ -534,7 +540,7 @@ ${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` 
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
                   <span className="text-slate-400 block text-[10px]">خرید قیمت درج شدہ</span>
                   <span className="text-base font-extrabold text-amber-400 font-mono">
-                    ₨ {reviewVisit.purchasePricePerUnit.toLocaleString()}
+                    ₨ {(reviewVisit.purchasePricePerUnit ?? reviewVisit.ratePerMund ?? 0).toLocaleString()}
                   </span>
                   <span className="text-[10px] text-slate-400 block">
                     {reviewVisit.purchasePriceUnit === 'bori' ? 'فی بوری' : reviewVisit.purchasePriceUnit === 'kg' ? 'فی کلو' : 'فی من'}

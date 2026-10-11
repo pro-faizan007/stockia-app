@@ -550,7 +550,7 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
                       </td>
 
                       <td className="py-3 px-3 font-mono text-slate-300">
-                        {cropHoldingKg.toLocaleString()} kg
+                        {(cropHoldingKg || 0).toLocaleString()} kg
                       </td>
 
                       <td className="py-3 px-3 font-mono text-slate-200">

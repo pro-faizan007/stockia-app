@@ -1,0 +1,181 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered grain trader, commission agent, or stockist profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email address" },
+        "displayName": { "type": "string", "description": "Trader or company name" },
+        "role": { "type": "string", "enum": ["user", "superadmin"], "description": "Account authorization role" },
+        "businessName": { "type": "string", "description": "Name of trade firm or godam" },
+        "mandiName": { "type": "string", "description": "Primary galla mandi name" },
+        "city": { "type": "string", "description": "City of operation" },
+        "phone": { "type": "string", "description": "Contact phone number" },
+        "createdAt": { "type": "string", "description": "Account registration timestamp" },
+        "lastLoginAt": { "type": "string", "description": "Last sign-in timestamp" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Crop": {
+      "title": "Crop",
+      "description": "Customizable crop season configuration and dhalta deduction rules",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique crop identifier" },
+        "name": { "type": "string", "description": "English crop name" },
+        "urduName": { "type": "string", "description": "Urdu crop name" },
+        "season": { "type": "string", "description": "Active agricultural season" },
+        "defaultBoriWeightKg": { "type": "number", "description": "Standard weight per bori in kg" },
+        "defaultMundWeightKg": { "type": "number", "description": "Standard weight per mund in kg" },
+        "deductionBaseKg": { "type": "number", "description": "Base weight for dhalta deduction" },
+        "deductionKg": { "type": "number", "description": "Weight deducted per deduction base" },
+        "dhaltaNote": { "type": "string", "description": "Explanatory notes for dhalta" },
+        "currentMarketRatePerMund": { "type": "number", "description": "Current prevailing rate in PKR" },
+        "targetSellRatePerMund": { "type": "number", "description": "Target liquidation rate in PKR" },
+        "storageCostPerBagMonth": { "type": "number", "description": "Godam storage fee per bag per month" },
+        "accentColor": { "type": "string", "description": "UI accent color class" },
+        "badgeBg": { "type": "string", "description": "Badge background class" },
+        "iconName": { "type": "string", "description": "Lucide icon name" }
+      },
+      "required": ["id", "name", "urduName"]
+    },
+    "ShopVisitNote": {
+      "title": "ShopVisitNote",
+      "description": "Daily visit diary record from mandi shops and arthis",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Visit note ID" },
+        "date": { "type": "string", "description": "Visit date (YYYY-MM-DD)" },
+        "shopNo": { "type": "string", "description": "Shop identifier" },
+        "agentName": { "type": "string", "description": "Arthi or trader name" },
+        "phone": { "type": "string", "description": "Contact number" },
+        "mandiName": { "type": "string", "description": "Grain market name" },
+        "cropId": { "type": "string", "description": "Target crop ID" },
+        "cropVariety": { "type": "string", "description": "Crop variety name" },
+        "stockQuality": { "type": "string", "description": "Quality tier" },
+        "qualityDescription": { "type": "string", "description": "Descriptive assessment" },
+        "moisturePercent": { "type": "number", "description": "Moisture percentage" },
+        "purchasePriceUnit": { "type": "string", "enum": ["bori", "kg", "mund"], "description": "Quoted unit" },
+        "purchasePricePerUnit": { "type": "number", "description": "Price per selected unit in PKR" },
+        "ratePerMund": { "type": "number", "description": "Normalized rate per 40kg mund" },
+        "ratePerBori": { "type": "number", "description": "Normalized rate per bori" },
+        "ratePerKg": { "type": "number", "description": "Normalized rate per kg" },
+        "sellingPriceInMarketPerMund": { "type": "number", "description": "Market rate in PKR" },
+        "quantityBags": { "type": "number", "description": "Total bags offered" },
+        "boriWeightKg": { "type": "number", "description": "Bori weight in kg" },
+        "mundWeightKg": { "type": "number", "description": "Mund weight in kg" },
+        "deductionBaseKg": { "type": "number", "description": "Deduction base kg" },
+        "deductionKg": { "type": "number", "description": "Deduction rate kg" },
+        "quantityMunds": { "type": "number", "description": "Computed volume in munds" },
+        "totalDeductionKg": { "type": "number", "description": "Computed total deduction in kg" },
+        "totalValuePkr": { "type": "number", "description": "Total financial value in PKR" },
+        "status": { "type": "string", "enum": ["visited", "bargaining", "purchased", "skipped"], "description": "Deal status" },
+        "notes": { "type": "string", "description": "Additional trader notes" },
+        "createdAt": { "type": "number", "description": "Creation timestamp in ms" }
+      },
+      "required": ["id", "date", "shopNo", "agentName", "cropId"]
+    },
+    "StockBatch": {
+      "title": "StockBatch",
+      "description": "Warehouse stock inventory lot record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Batch unique ID" },
+        "lotNumber": { "type": "string", "description": "Lot identifier" },
+        "cropId": { "type": "string", "description": "Crop ID" },
+        "cropVariety": { "type": "string", "description": "Crop variety name" },
+        "purchaseDate": { "type": "string", "description": "Purchase date" },
+        "sellerShopNo": { "type": "string", "description": "Seller shop number" },
+        "sellerName": { "type": "string", "description": "Seller name" },
+        "mandiName": { "type": "string", "description": "Grain market name" },
+        "godamLocation": { "type": "string", "description": "Warehouse location details" },
+        "initialBags": { "type": "number", "description": "Total bags purchased" },
+        "remainingBags": { "type": "number", "description": "Bags remaining in stock" },
+        "bagWeightKg": { "type": "number", "description": "Weight per bag in kg" },
+        "grossWeightKg": { "type": "number", "description": "Gross weight in kg" },
+        "dhaltaExtraDeductedKg": { "type": "number", "description": "Extra dhalta grain deducted" },
+        "netBilledMunds": { "type": "number", "description": "Weight billed for in munds" },
+        "physicalMunds": { "type": "number", "description": "Actual physical munds received" },
+        "purchaseRatePerMund": { "type": "number", "description": "Purchase rate in PKR per mund" },
+        "totalBilledPurchasePkr": { "type": "number", "description": "Net paid to seller in PKR" },
+        "bardanaCostPkr": { "type": "number", "description": "Bardana/bags expense in PKR" },
+        "laborCostPkr": { "type": "number", "description": "Palladari & labor cost in PKR" },
+        "totalInvestedPkr": { "type": "number", "description": "Total landed investment in PKR" },
+        "effectiveCostPerMund": { "type": "number", "description": "Effective cost per physical mund" },
+        "notes": { "type": "string", "description": "Storage remarks" },
+        "createdAt": { "type": "number", "description": "Creation timestamp in ms" }
+      },
+      "required": ["id", "lotNumber", "cropId", "purchaseDate"]
+    },
+    "SaleRecord": {
+      "title": "SaleRecord",
+      "description": "Grain sale transaction record with profit and loss calculation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Sale transaction ID" },
+        "batchId": { "type": "string", "description": "Source stock batch ID" },
+        "cropId": { "type": "string", "description": "Crop ID" },
+        "saleDate": { "type": "string", "description": "Sale date" },
+        "buyerName": { "type": "string", "description": "Buyer name or flour mill" },
+        "buyerShopNo": { "type": "string", "description": "Buyer shop number" },
+        "bagsSold": { "type": "number", "description": "Bags sold" },
+        "bagWeightKg": { "type": "number", "description": "Bag weight in kg" },
+        "grossWeightKg": { "type": "number", "description": "Gross weight in kg" },
+        "dhaltaExtraGivenKg": { "type": "number", "description": "Dhalta extra given to buyer in kg" },
+        "netBilledMunds": { "type": "number", "description": "Billed weight in munds" },
+        "saleRatePerMund": { "type": "number", "description": "Sale rate per mund in PKR" },
+        "totalSalePkr": { "type": "number", "description": "Total sale invoice in PKR" },
+        "costAllocatedPkr": { "type": "number", "description": "Cost basis of sold grain in PKR" },
+        "netProfitPkr": { "type": "number", "description": "Net profit or loss in PKR" },
+        "notes": { "type": "string", "description": "Sale transaction remarks" },
+        "createdAt": { "type": "number", "description": "Creation timestamp in ms" }
+      },
+      "required": ["id", "batchId", "cropId", "saleDate", "buyerName"]
+    },
+    "MandiRateHistory": {
+      "title": "MandiRateHistory",
+      "description": "Daily grain market rate fluctuation entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Rate record ID" },
+        "cropId": { "type": "string", "description": "Crop ID" },
+        "date": { "type": "string", "description": "Date of rate quotation" },
+        "mandiName": { "type": "string", "description": "Grain market name" },
+        "minRate": { "type": "number", "description": "Minimum rate in PKR" },
+        "maxRate": { "type": "number", "description": "Maximum rate in PKR" },
+        "avgRate": { "type": "number", "description": "Average rate in PKR" },
+        "trend": { "type": "string", "enum": ["rising", "falling", "stable"], "description": "Market trend" },
+        "recordedBy": { "type": "string", "description": "Trader or recorder name" }
+      },
+      "required": ["id", "cropId", "date", "mandiName", "avgRate"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document containing account role and contact details"
+    },
+    "/users/{userId}/crops/{cropId}": {
+      "schema": "Crop",
+      "description": "User specific crop configuration and deduction preferences"
+    },
+    "/users/{userId}/visits/{visitId}": {
+      "schema": "ShopVisitNote",
+      "description": "User specific shop visit diary notes"
+    },
+    "/users/{userId}/batches/{batchId}": {
+      "schema": "StockBatch",
+      "description": "User specific godam stock batches"
+    },
+    "/users/{userId}/sales/{saleId}": {
+      "schema": "SaleRecord",
+      "description": "User specific sales records"
+    },
+    "/users/{userId}/rateHistory/{historyId}": {
+      "schema": "MandiRateHistory",
+      "description": "User specific daily mandi price trend records"
+    }
+  }
+}

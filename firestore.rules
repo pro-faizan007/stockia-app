@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && request.auth.token.email == 'rahatlee97@gmail.com';
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // User profile documents
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isSuperAdmin();
+      allow list: if isSuperAdmin();
+      allow create: if isOwner(userId) && request.resource.data.uid == request.auth.uid;
+      allow update: if (isOwner(userId) && request.resource.data.uid == userId) || isSuperAdmin();
+      allow delete: if isSuperAdmin();
+
+      // Crops subcollection
+      match /crops/{cropId} {
+        allow read, write: if isOwner(userId) || isSuperAdmin();
+      }
+
+      // Shop Visit Diary notes subcollection
+      match /visits/{visitId} {
+        allow read, write: if isOwner(userId) || isSuperAdmin();
+      }
+
+      // Warehouse Stock Batches subcollection
+      match /batches/{batchId} {
+        allow read, write: if isOwner(userId) || isSuperAdmin();
+      }
+
+      // Sales records subcollection
+      match /sales/{saleId} {
+        allow read, write: if isOwner(userId) || isSuperAdmin();
+      }
+
+      // Mandi Rate History subcollection
+      match /rateHistory/{historyId} {
+        allow read, write: if isOwner(userId) || isSuperAdmin();
+      }
+    }
+  }
+}

@@ -118,3 +118,19 @@ export interface MandiRateHistory {
   trend: 'rising' | 'falling' | 'stable';
   recordedBy?: string;
 }
+
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName: string;
+  role: 'user' | 'superadmin';
+  businessName?: string;
+  mandiName?: string;
+  city?: string;
+  phone?: string;
+  createdAt: string;
+  lastLoginAt: string;
+  batchCount?: number;
+  visitCount?: number;
+  saleCount?: number;
+}
