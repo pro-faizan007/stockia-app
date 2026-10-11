@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* ============================================================
+   LIGHT MODE: Anti-glare high-contrast theme for outdoor grain markets (غلہ منڈی)
+   ============================================================ */
+html.light-mode,
+.light-mode {
+  color-scheme: light;
+}
+
+.light-mode body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Backgrounds */
+.light-mode .bg-slate-950 {
+  background-color: #f1f5f9 !important;
+}
+
+.light-mode .bg-slate-900,
+.light-mode .bg-slate-900\/95,
+.light-mode .bg-slate-900\/90,
+.light-mode .bg-slate-900\/80,
+.light-mode .bg-slate-900\/98 {
+  background-color: #ffffff !important;
+}
+
+.light-mode .bg-slate-800,
+.light-mode .bg-slate-800\/90,
+.light-mode .bg-slate-800\/80,
+.light-mode .bg-slate-800\/70,
+.light-mode .bg-slate-800\/60,
+.light-mode .bg-slate-800\/50,
+.light-mode .bg-slate-800\/40 {
+  background-color: #f8fafc !important;
+}
+
+.light-mode .bg-slate-700,
+.light-mode .bg-slate-700\/80,
+.light-mode .bg-slate-700\/60,
+.light-mode .bg-slate-700\/50 {
+  background-color: #e2e8f0 !important;
+}
+
+/* Borders */
+.light-mode .border-slate-800,
+.light-mode .border-slate-800\/90,
+.light-mode .border-slate-800\/80,
+.light-mode .border-slate-800\/60,
+.light-mode .border-slate-700,
+.light-mode .border-slate-700\/80,
+.light-mode .border-slate-700\/70,
+.light-mode .border-slate-700\/60,
+.light-mode .border-slate-700\/50 {
+  border-color: #cbd5e1 !important;
+}
+
+.light-mode .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+.light-mode .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* Text adjustments for high-glare outdoor contrast */
+.light-mode :is(h1, h2, h3, h4, h5, p, span, strong, td, th, label, div, select, input, textarea):not([class*="bg-emerald"]):not([class*="bg-amber"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-purple"]):not([class*="bg-indigo"]):not([class*="text-slate-950"]).text-white {
+  color: #0f172a !important;
+}
+
+.light-mode .text-slate-100 {
+  color: #0f172a !important;
+}
+
+.light-mode .text-slate-200 {
+  color: #1e293b !important;
+}
+
+.light-mode .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light-mode .text-slate-400 {
+  color: #475569 !important;
+}
+
+.light-mode .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* High contrast colored numbers/labels in bright daylight */
+.light-mode .text-amber-400 {
+  color: #b45309 !important; /* amber-700 */
+}
+
+.light-mode .text-amber-300 {
+  color: #92400e !important; /* amber-800 */
+}
+
+.light-mode .text-emerald-400 {
+  color: #047857 !important; /* emerald-700 */
+}
+
+.light-mode .text-emerald-300 {
+  color: #065f46 !important; /* emerald-800 */
+}
+
+.light-mode .text-rose-400 {
+  color: #be123c !important; /* rose-700 */
+}
+
+.light-mode .text-rose-300 {
+  color: #9f1239 !important; /* rose-800 */
+}
+
+.light-mode .text-blue-400 {
+  color: #1d4ed8 !important; /* blue-700 */
+}
+
+.light-mode .text-blue-300 {
+  color: #1e40af !important; /* blue-800 */
+}
+
+/* Form Controls (Inputs, Selects, Textareas) in Light Mode */
+.light-mode input:not([type="checkbox"]):not([type="radio"]),
+.light-mode select,
+.light-mode textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-mode select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Badges and Subtle Accent Backgrounds in Light Mode */
+.light-mode .bg-amber-500\/10,
+.light-mode .bg-amber-500\/15,
+.light-mode .bg-amber-500\/20 {
+  background-color: #fef3c7 !important;
+  border-color: #fcd34d !important;
+  color: #92400e !important;
+}
+
+.light-mode .bg-emerald-500\/10,
+.light-mode .bg-emerald-500\/15,
+.light-mode .bg-emerald-500\/20 {
+  background-color: #d1fae5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+.light-mode .bg-rose-500\/10,
+.light-mode .bg-rose-500\/15,
+.light-mode .bg-rose-500\/20 {
+  background-color: #ffe4e6 !important;
+  border-color: #fecdd3 !important;
+  color: #9f1239 !important;
+}
+
+.light-mode .bg-blue-500\/10,
+.light-mode .bg-blue-500\/15,
+.light-mode .bg-blue-500\/20 {
+  background-color: #dbeafe !important;
+  border-color: #bfdbfe !important;
+  color: #1e40af !important;
+}
+
+/* Modals backdrop */
+.light-mode .bg-black\/75 {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Soft Crisp Shadows */
+.light-mode .shadow-lg,
+.light-mode .shadow-md,
+.light-mode .shadow-xl,
+.light-mode .shadow-2xl {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* High-contrast Action buttons */
+.light-mode button.bg-amber-500 {
+  background-color: #f59e0b !important;
+  color: #0f172a !important;
+}
+
+.light-mode button.bg-amber-400 {
+  background-color: #fbbf24 !important;
+  color: #0f172a !important;
+}
+
+.light-mode button.bg-emerald-600 {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+.light-mode button.bg-emerald-600:hover {
+  background-color: #047857 !important;
+}
+
+.light-mode button.bg-rose-600 {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+}

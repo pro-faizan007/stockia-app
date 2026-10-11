@@ -1,0 +1,6 @@
+{
+  "name": "MandiStockia - Pakistan Grain Inventory & Price Tracker",
+  "description": "Professional grain stock management, shop visit notes, and mandi rate fluctuation tracker for Pakistani grain traders (Stockia / Arthi) with Mund, Bori, and Dhalta calculations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
