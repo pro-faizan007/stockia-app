@@ -718,6 +718,7 @@ export default function App() {
             onClearSamples={handleClearAllSamples}
             onLoadSingleSample={handleLoadSingleSample}
             onNavigateGodownRent={handleNavigateGodownRent}
+            userProfile={userProfile}
           />
         )}
 

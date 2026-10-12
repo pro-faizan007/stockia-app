@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   TrendingUp,
   Warehouse,
@@ -16,6 +16,8 @@ import {
   FileDown,
   Building2,
   Plus,
+  Printer,
+  Eye,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -27,9 +29,10 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { CropConfig, SaleRecord, ShopVisitNote, StockBatch, GodownRentRecord } from '../types';
+import { CropConfig, SaleRecord, ShopVisitNote, StockBatch, GodownRentRecord, UserProfile } from '../types';
 import { formatMunds, formatPKR, DEFAULT_MUND_KG } from '../utils/mandiCalculations';
 import { generateFinancialAndInventoryPdf } from '../utils/pdfExport';
+import { ReportModal } from './ReportModal';
 
 interface CombineOverviewProps {
   crops: CropConfig[];
@@ -43,6 +46,7 @@ interface CombineOverviewProps {
   onClearSamples?: () => void;
   onLoadSingleSample?: () => void;
   onNavigateGodownRent?: () => void;
+  userProfile?: UserProfile | null;
 }
 
 export const CombineOverview: React.FC<CombineOverviewProps> = ({
@@ -57,7 +61,10 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
   onClearSamples,
   onLoadSingleSample,
   onNavigateGodownRent,
+  userProfile,
 }) => {
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   // Filter by selectedCropId if not 'all'
   const filteredBatches = selectedCropId === 'all'
     ? batches
@@ -227,13 +234,24 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleExportPdf = () => {
-    generateFinancialAndInventoryPdf({
-      crops,
-      batches,
-      sales,
-      selectedCropId,
-    });
+  const handleExportPdf = async () => {
+    setIsExportingPdf(true);
+    try {
+      await generateFinancialAndInventoryPdf({
+        crops,
+        batches,
+        sales,
+        visits,
+        rents,
+        selectedCropId,
+        userProfile,
+      });
+    } catch (err) {
+      console.error('Direct PDF export error, opening modal:', err);
+      setIsReportModalOpen(true);
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   return (
@@ -255,15 +273,37 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
+          {/* 1. Direct PDF Download Button */}
           <button
             onClick={handleExportPdf}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 border border-amber-400 transition-all cursor-pointer active:scale-95 shadow-md shadow-amber-500/20"
-            title="رپورٹ ڈاؤن لوڈ"
+            disabled={isExportingPdf}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 border border-amber-400 transition-all cursor-pointer active:scale-95 shadow-md shadow-amber-500/20 disabled:opacity-60"
+            title="رپورٹ پی ڈی ایف ڈاؤن لوڈ کریں"
           >
-            <FileDown className="w-4 h-4 text-slate-950 shrink-0 stroke-[2.5]" />
-            <span className="whitespace-nowrap font-black">رپورٹ ڈاؤن لوڈ</span>
+            {isExportingPdf ? (
+              <>
+                <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                <span className="whitespace-nowrap font-black">ڈاؤن لوڈ ہو رہی ہے...</span>
+              </>
+            ) : (
+              <>
+                <FileDown className="w-4 h-4 text-slate-950 shrink-0 stroke-[2.5]" />
+                <span className="whitespace-nowrap font-black">رپورٹ ڈاؤن لوڈ</span>
+              </>
+            )}
           </button>
 
+          {/* 2. Interactive Preview & Print Modal Button */}
+          <button
+            onClick={() => setIsReportModalOpen(true)}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 transition-all cursor-pointer active:scale-95 shadow-sm"
+            title="رپورٹ فل سکرین پریویو و پرنٹ"
+          >
+            <Eye className="w-4 h-4 text-amber-400" />
+            <span className="whitespace-nowrap">پریویو و پرنٹ</span>
+          </button>
+
+          {/* 3. WhatsApp Summary Button */}
           <button
             onClick={handleCopyWhatsApp}
             className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 transition-all cursor-pointer active:scale-95 shadow-md shadow-emerald-600/20"
@@ -1024,6 +1064,19 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
           </div>
         )}
       </div>
+
+      {/* Official Comprehensive Report Modal (Print & PDF) */}
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        crops={crops}
+        batches={batches}
+        sales={sales}
+        visits={visits}
+        rents={rents}
+        selectedCropId={selectedCropId}
+        userProfile={userProfile}
+      />
     </div>
   );
 };
