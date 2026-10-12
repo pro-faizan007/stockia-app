@@ -732,45 +732,45 @@ ${result.kirayaTotalPkr > 0 ? `🚛 *کرایہ منڈی تا گودام:* ₨ $
             {/* Calculated Breakdown Across All 4 Periods */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
               {/* Monthly */}
-              <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30">
-                <span className="text-[10px] text-blue-300 block font-bold uppercase">ماہانہ کرایہ (1 Month)</span>
-                <span className="text-base sm:text-lg font-black text-blue-400 font-mono">
+              <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-center flex flex-col items-center justify-center">
+                <span className="text-[10px] text-blue-300 block font-bold uppercase text-center">ماہانہ کرایہ (1 Month)</span>
+                <span className="text-base sm:text-lg font-black text-blue-400 font-mono text-center">
                   {formatPKR(rent1Month)}
                 </span>
-                <span className="text-[10px] text-amber-400 block mt-0.5">
+                <span className="text-[10px] text-amber-400 block mt-0.5 text-center">
                   ₨ {costPerBagPerMonth.toFixed(1)} فی بوری / ماہ
                 </span>
               </div>
 
               {/* Quarterly (3 Months) */}
-              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                <span className="text-[10px] text-amber-300 block font-bold uppercase">سہ ماہی کرایہ (3 Months)</span>
-                <span className="text-base sm:text-lg font-black text-amber-400 font-mono">
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center flex flex-col items-center justify-center">
+                <span className="text-[10px] text-amber-300 block font-bold uppercase text-center">سہ ماہی کرایہ (3 Months)</span>
+                <span className="text-base sm:text-lg font-black text-amber-400 font-mono text-center">
                   {formatPKR(rent3Months)}
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
+                <span className="text-[10px] text-slate-400 block mt-0.5 text-center">
                   ہر 3 ماہ کی مجموعی رقم
                 </span>
               </div>
 
               {/* Half-Yearly (6 Months) */}
-              <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/30">
-                <span className="text-[10px] text-purple-300 block font-bold uppercase">چھ ماہی کرایہ (6 Months)</span>
-                <span className="text-base sm:text-lg font-black text-purple-400 font-mono">
+              <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-center flex flex-col items-center justify-center">
+                <span className="text-[10px] text-purple-300 block font-bold uppercase text-center">چھ ماہی کرایہ (6 Months)</span>
+                <span className="text-base sm:text-lg font-black text-purple-400 font-mono text-center">
                   {formatPKR(rent6Months)}
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
+                <span className="text-[10px] text-slate-400 block mt-0.5 text-center">
                   ایک سیزن (6 ماہ) کی لاگت
                 </span>
               </div>
 
               {/* Yearly (12 Months) */}
-              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
-                <span className="text-[10px] text-emerald-300 block font-bold uppercase">سالانہ کرایہ (12 Months)</span>
-                <span className="text-base sm:text-lg font-black text-emerald-400 font-mono">
+              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center flex flex-col items-center justify-center">
+                <span className="text-[10px] text-emerald-300 block font-bold uppercase text-center">سالانہ کرایہ (12 Months)</span>
+                <span className="text-base sm:text-lg font-black text-emerald-400 font-mono text-center">
                   {formatPKR(rent12Months)}
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
+                <span className="text-[10px] text-slate-400 block mt-0.5 text-center">
                   مکمل سال کا گودام خرچ
                 </span>
               </div>

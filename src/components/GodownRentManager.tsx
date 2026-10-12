@@ -195,17 +195,17 @@ export const GodownRentManager: React.FC<GodownRentManagerProps> = ({
       {/* 1. Multi-Cycle Rent Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Monthly */}
-        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md text-center flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1 w-full">
             <span>ماہانہ کرایہ (1 Month)</span>
             <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold">
               MONTHLY
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white font-mono">
+          <div className="text-xl sm:text-2xl font-black text-white font-mono text-center">
             {formatPKR(Math.round(normalizedMonthlyTotal))}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
+          <div className="text-[11px] text-slate-400 mt-1 flex items-center justify-center gap-1.5 text-center">
             <span>فی بوری ماہانہ لاگت:</span>
             <span className="font-bold text-amber-400 font-mono">
               ₨ {costPerBagPerMonth.toFixed(1)}/بوری
@@ -214,49 +214,49 @@ export const GodownRentManager: React.FC<GodownRentManagerProps> = ({
         </div>
 
         {/* 3-Monthly / Quarterly */}
-        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md text-center flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1 w-full">
             <span>سہ ماہی کرایہ (3 Months)</span>
             <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold">
               QUARTERLY
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-black text-amber-300 font-mono">
+          <div className="text-xl sm:text-2xl font-black text-amber-300 font-mono text-center">
             {formatPKR(Math.round(quarterlyTotal))}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-slate-400 mt-1 text-center">
             ہر 3 ماہ بعد واجب الادا رقم
           </div>
         </div>
 
         {/* 6-Monthly / Half-Yearly */}
-        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md text-center flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1 w-full">
             <span>چھ ماہی کرایہ (6 Months)</span>
             <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold">
               HALF-YEARLY
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-black text-purple-300 font-mono">
+          <div className="text-xl sm:text-2xl font-black text-purple-300 font-mono text-center">
             {formatPKR(Math.round(halfYearlyTotal))}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-slate-400 mt-1 text-center">
             فصل در فصل (6 ماہ) کرایہ لاگت
           </div>
         </div>
 
         {/* Yearly */}
-        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 shadow-md text-center flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1 w-full">
             <span>سالانہ کرایہ (1 Year)</span>
             <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">
               ANNUAL
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">
+          <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono text-center">
             {formatPKR(Math.round(yearlyTotal))}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-slate-400 mt-1 text-center">
             مکمل سال کا مجموعی گودام خرچ
           </div>
         </div>

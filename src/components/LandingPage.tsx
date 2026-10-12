@@ -225,67 +225,67 @@ export function LandingPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 transition-all group space-y-3 shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 transition-all group space-y-3 shadow-lg flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform mx-auto">
                 <BookOpen className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-white">دکان وزٹ و بیوپاری ڈائری</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-lg font-bold text-white text-center">دکان وزٹ و بیوپاری ڈائری</h3>
+              <p className="text-xs text-slate-300 leading-relaxed text-center">
                 منڈی میں مختلف دکانوں کے چکر کے دوران بھاؤ (فی بوری / فی کلو / فی من)، نمی (Moisture %)، اناج کا معیار (سپر، اے گریڈ) درج کریں اور 1-کلک سے لاٹ میں تبدیل کریں۔
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/40 transition-all group space-y-3 shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/40 transition-all group space-y-3 shadow-lg flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform mx-auto">
                 <Warehouse className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-white">گودام انوینٹری و ڈھلتا کٹوتی</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-lg font-bold text-white text-center">گودام انوینٹری و ڈھلتا کٹوتی</h3>
+              <p className="text-xs text-slate-300 leading-relaxed text-center">
                 کل وزن بمقابلہ بل والا وزن اور ڈھلتا کی مد میں حاصل ہونے والا اضافی اناج ٹریک کریں۔ باردانہ، پلے داری، تلائی اور مزدوری شامل کر کے فی من اصل لاگت جانیں۔
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-blue-500/40 transition-all group space-y-3 shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-blue-500/40 transition-all group space-y-3 shadow-lg flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform mx-auto">
                 <Calculator className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-white">ریئل ٹائم منڈی کیلکولیٹر</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                40 کلو من، 50 کلو یا کسٹم بوری کے درمیان فوری تبدیلی۔ فی بوری 1 تا 2.5 کلو ڈھلتا کٹوتی اور منڈی کے رائج فارمولوں کا فوری اور بے عیب حساب۔
+              <h3 className="text-lg font-bold text-white text-center">ریئل ٹائم منڈی کیلکولیٹر</h3>
+              <p className="text-xs text-slate-300 leading-relaxed text-center">
+                40 کلو من، 60 کلو، 70 کلو یا کسٹم بوری کے درمیان فوری تبدیلی۔ فی بوری 1 تا 2.5 کلو ڈھلتا کٹوتی اور منڈی کے رائج فارمولوں کا فوری اور بے عیب حساب۔
               </p>
             </div>
 
             {/* Feature 4 */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 transition-all group space-y-3 shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 transition-all group space-y-3 shadow-lg flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform mx-auto">
                 <DollarSign className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-white">فروخت کھاتہ و منافع ٹریکر</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-lg font-bold text-white text-center">فروخت کھاتہ و منافع ٹریکر</h3>
+              <p className="text-xs text-slate-300 leading-relaxed text-center">
                 فلور ملوں اور خریداروں کو اناج فروخت کرنے کا مکمل ریکارڈ۔ خریدی گئی لاٹ کی اصل لاگت اور موجودہ فروخت کے درمیان خالص نفع یا نقصان (PKR) فوری دیکھیں!
               </p>
             </div>
 
             {/* Feature 5 */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-rose-500/40 transition-all group space-y-3 shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform">
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-rose-500/40 transition-all group space-y-3 shadow-lg flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform mx-auto">
                 <TrendingUp className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-white">مارکیٹ بھاؤ و اتار چڑھاؤ چارٹس</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-lg font-bold text-white text-center">مارکیٹ بھاؤ و اتار چڑھاؤ چارٹس</h3>
+              <p className="text-xs text-slate-300 leading-relaxed text-center">
                 مختلف منڈیوں کے روزانہ کم ترین، بلند ترین اور اوسط ریٹس کا گرافکل ٹریکر۔ تیزی یا مندی کا فوری رجحان جان کر اناج بیچنے کا بہترین وقت منتخب کریں۔
               </p>
             </div>
 
             {/* Feature 6 */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-amber-400/40 transition-all group space-y-3 shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-amber-400/40 transition-all group space-y-3 shadow-lg flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform mx-auto">
                 <Sun className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-white">کھلی منڈی و دھوپ ہائی کنٹراسٹ موڈ</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-lg font-bold text-white text-center">کھلی منڈی و دھوپ ہائی کنٹراسٹ موڈ</h3>
+              <p className="text-xs text-slate-300 leading-relaxed text-center">
                 تیز دھوپ میں موبائل سکرین پر واضح نظر آنے کے لیے خصوصی ہائی کنٹراسٹ ڈسپلے موڈ اور پیشہ ورانہ پرنٹ ایبل پی ڈی ایف رسیدوں کی تیاری۔
               </p>
             </div>
@@ -511,17 +511,17 @@ export function LandingPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* Tier 1 */}
             <div className="p-7 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">سنگل مرچنٹ</span>
-                <h3 className="text-xl font-bold text-white">سٹاکیہ بنیادی (Basic)</h3>
-                <div className="flex items-baseline gap-1">
+              <div className="space-y-4 text-center">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block text-center">سنگل مرچنٹ</span>
+                <h3 className="text-xl font-bold text-white text-center">سٹاکیہ بنیادی (Basic)</h3>
+                <div className="flex items-baseline justify-center gap-1">
                   <span className="text-3xl font-black text-amber-400">مفت</span>
                   <span className="text-xs text-slate-400">/ بنیادی ٹرائل</span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-400 leading-relaxed text-center">
                   چھوٹے تاجروں اور کسانوں کے لیے بنیادی دکان وزٹ اور کٹوتی کا حساب کتاب۔
                 </p>
-                <ul className="space-y-2.5 text-xs text-slate-300 pt-2">
+                <ul className="space-y-2.5 text-xs text-slate-300 pt-2 text-start max-w-xs mx-auto">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>50 لاٹس گودام انوینٹری</span>
@@ -542,7 +542,7 @@ export function LandingPage({
               </div>
               <button
                 onClick={() => onOpenAuth('signup')}
-                className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors"
+                className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
               >
                 مفت اکاؤنٹ بنائیں
               </button>
@@ -553,17 +553,17 @@ export function LandingPage({
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-amber-500 text-slate-950 font-black text-[11px] uppercase tracking-wider shadow-md">
                 سب سے مقبول
               </div>
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">پروفیشنل آڑھتی</span>
-                <h3 className="text-xl font-bold text-white">آڑھتی پلس (Pro Trader)</h3>
-                <div className="flex items-baseline gap-1">
+              <div className="space-y-4 text-center">
+                <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block text-center">پروفیشنل آڑھتی</span>
+                <h3 className="text-xl font-bold text-white text-center">آڑھتی پلس (Pro Trader)</h3>
+                <div className="flex items-baseline justify-center gap-1">
                   <span className="text-3xl font-black text-amber-400">₨ 2,999</span>
                   <span className="text-xs text-slate-400">/ ماہانہ</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed text-center">
                   فعال آڑھتیوں اور کمیشن ایجنٹوں کے لیے لا محدود گودام لاٹس اور پی ڈی ایف بلز۔
                 </p>
-                <ul className="space-y-2.5 text-xs text-slate-200 pt-2">
+                <ul className="space-y-2.5 text-xs text-slate-200 pt-2 text-start max-w-xs mx-auto">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-amber-400 shrink-0" />
                     <span className="font-semibold text-white">لا محدود گودام انوینٹری لاٹس</span>
@@ -588,7 +588,7 @@ export function LandingPage({
               </div>
               <button
                 onClick={() => onOpenAuth('signup')}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg transition-all"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg transition-all cursor-pointer"
               >
                 آڑھتی پلس حاصل کریں
               </button>
@@ -596,17 +596,17 @@ export function LandingPage({
 
             {/* Tier 3 */}
             <div className="p-7 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">منڈی کارپوریشن</span>
-                <h3 className="text-xl font-bold text-white">سپر غلہ انٹرپرائز (Enterprise)</h3>
-                <div className="flex items-baseline gap-1">
+              <div className="space-y-4 text-center">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block text-center">منڈی کارپوریشن</span>
+                <h3 className="text-xl font-bold text-white text-center">سپر غلہ انٹرپرائز (Enterprise)</h3>
+                <div className="flex items-baseline justify-center gap-1">
                   <span className="text-3xl font-black text-amber-400">₨ 6,999</span>
                   <span className="text-xs text-slate-400">/ ماہانہ</span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-400 leading-relaxed text-center">
                   فلور ملوں، ملٹیپل گودام چینز اور منڈی ایسوسی ایشنز کے لیے فل ایکسس۔
                 </p>
-                <ul className="space-y-2.5 text-xs text-slate-300 pt-2">
+                <ul className="space-y-2.5 text-xs text-slate-300 pt-2 text-start max-w-xs mx-auto">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>ملٹیپل یوزرز اور ملازمین اکاؤنٹس</span>
@@ -627,7 +627,7 @@ export function LandingPage({
               </div>
               <button
                 onClick={() => onOpenAuth('signup')}
-                className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors"
+                className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
               >
                 انٹرپرائز سپورٹ سے رابطہ کریں
               </button>
@@ -649,33 +649,33 @@ export function LandingPage({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
-              <p className="text-xs text-slate-300 leading-relaxed italic">
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 text-center flex flex-col items-center justify-between">
+              <p className="text-xs text-slate-300 leading-relaxed italic text-center">
                 "پہلے پرچیوں پر ڈھلتا کی کٹوتی میں بہت غلطیاں ہوتی تھیں اور گودام میں کتنا مال بچا ہے، شام کو یاد نہیں رہتا تھا۔ اب ہر سودے کا فی من خرچ اور خالص اناج سیکنڈوں میں سامنے ہوتا ہے۔"
               </p>
-              <div className="pt-2 border-t border-slate-800/80">
-                <h4 className="text-sm font-bold text-white">میاں طارق محمود</h4>
-                <p className="text-[11px] text-amber-400">غلہ کمیشن ایجنٹ، اوکاڑہ نیو غلہ منڈی</p>
+              <div className="pt-2 border-t border-slate-800/80 w-full text-center">
+                <h4 className="text-sm font-bold text-white text-center">میاں طارق محمود</h4>
+                <p className="text-[11px] text-amber-400 text-center">غلہ کمیشن ایجنٹ، اوکاڑہ نیو غلہ منڈی</p>
               </div>
             </div>
 
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
-              <p className="text-xs text-slate-300 leading-relaxed italic">
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 text-center flex flex-col items-center justify-between">
+              <p className="text-xs text-slate-300 leading-relaxed italic text-center">
                 "دھوپ موڈ فیچر کمال کا ہے۔ منڈی کے کھلے میدان میں موبائل پر حساب کرنا آسان ہو گیا ہے۔ اس ایپ نے ہمارے فلور مل سپلائی کے کھاتے کو بالکل شفاف کر دیا ہے۔"
               </p>
-              <div className="pt-2 border-t border-slate-800/80">
-                <h4 className="text-sm font-bold text-white">چوہدری شہزاد اکرم</h4>
-                <p className="text-[11px] text-amber-400">گودام دار و سپلائر، فیصل آباد غلہ منڈی</p>
+              <div className="pt-2 border-t border-slate-800/80 w-full text-center">
+                <h4 className="text-sm font-bold text-white text-center">چوہدری شہزاد اکرم</h4>
+                <p className="text-[11px] text-amber-400 text-center">گودام دار و سپلائر، فیصل آباد غلہ منڈی</p>
               </div>
             </div>
 
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
-              <p className="text-xs text-slate-300 leading-relaxed italic">
+            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 text-center flex flex-col items-center justify-between">
+              <p className="text-xs text-slate-300 leading-relaxed italic text-center">
                 "سب سے اچھی بات یہ ہے کہ میرا ڈیٹا صرف میرے پاس ہے اور اگر فون گم بھی ہو جائے تو گوگل لاگ ان سے سارا گودام سٹاک واپس آ جاتا ہے۔ ہر بیوپاری کو یہ سافٹ ویئر لازمی لینا چاہیے۔"
               </p>
-              <div className="pt-2 border-t border-slate-800/80">
-                <h4 className="text-sm font-bold text-white">ملک ناصر نواز</h4>
-                <p className="text-[11px] text-amber-400">سٹاکیہ تاجر، سرگودھا غلہ منڈی</p>
+              <div className="pt-2 border-t border-slate-800/80 w-full text-center">
+                <h4 className="text-sm font-bold text-white text-center">ملک ناصر نواز</h4>
+                <p className="text-[11px] text-amber-400 text-center">سٹاکیہ تاجر، سرگودھا غلہ منڈی</p>
               </div>
             </div>
           </div>
@@ -720,17 +720,17 @@ export function LandingPage({
                 <button
                   type="button"
                   onClick={() => toggleFaq(idx)}
-                  className="w-full p-4 sm:p-5 flex items-center justify-between text-left text-xs sm:text-sm font-bold text-white hover:text-amber-400 transition-colors"
+                  className="w-full p-4 sm:p-5 flex items-center justify-between text-right text-xs sm:text-sm font-bold text-white hover:text-amber-400 transition-colors cursor-pointer"
                 >
-                  <span>{item.q}</span>
+                  <span className="text-right flex-1">{item.q}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-slate-400 transition-transform ${
+                    className={`w-4 h-4 text-slate-400 transition-transform shrink-0 ml-2 ${
                       faqOpen === idx ? 'rotate-180 text-amber-400' : ''
                     }`}
                   />
                 </button>
                 {faqOpen === idx && (
-                  <div className="p-4 sm:p-5 pt-0 text-xs text-slate-300 leading-relaxed border-t border-slate-800/80">
+                  <div className="p-4 sm:p-5 pt-0 text-xs text-slate-300 leading-relaxed border-t border-slate-800/80 text-right">
                     {item.a}
                   </div>
                 )}
