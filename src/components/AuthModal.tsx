@@ -18,6 +18,7 @@ import {
   signInWithGoogle,
   loginWithEmail,
   registerWithEmail,
+  isUserSuperAdmin,
 } from '../lib/firebase';
 import { saveUserProfile } from '../lib/dataService';
 import { UserProfile } from '../types';
@@ -58,10 +59,7 @@ export function AuthModal({
           uid: res.user.uid,
           email: res.user.email || '',
           displayName: res.user.displayName || 'Mandi Trader',
-          role:
-            res.user.email?.toLowerCase() === 'rahatlee97@gmail.com'
-              ? 'superadmin'
-              : 'user',
+          role: isUserSuperAdmin(res.user) ? 'superadmin' : 'user',
           createdAt: new Date().toISOString(),
           lastLoginAt: new Date().toISOString(),
         };
@@ -71,7 +69,15 @@ export function AuthModal({
       onClose();
     } catch (err: any) {
       console.error(err);
-      setError(err?.message || 'گوگل سائن ان میں مسئلہ پیش آیا۔ براہ کرم دوبارہ کوشش کریں۔');
+      if (err?.code === 'auth/unauthorized-domain' || err?.message?.includes('unauthorized-domain')) {
+        setError(
+          `گوگل لاگ ان کیلئے یہ ڈومین (${window.location.hostname}) فائر بیس کنسول میں مجاز نہیں ہے۔ آپ نیچے دیئے گئے ای میل اور پاس ورڈ سے براہِ راست لاگ ان / سائن اپ کر سکتے ہیں، یا لائیو ڈیمو بلا تعطل استعمال کریں۔`
+        );
+      } else if (err?.code === 'auth/popup-closed-by-user') {
+        setError('لاگ ان ونڈو بند کر دی گئی تھی۔ براہ کرم دوبارہ کوشش کریں۔');
+      } else {
+        setError(err?.message || 'گوگل سائن ان میں مسئلہ پیش آیا۔ براہ کرم دوبارہ کوشش کریں۔');
+      }
     } finally {
       setLoading(false);
     }
@@ -100,10 +106,7 @@ export function AuthModal({
             uid: res.user.uid,
             email: res.user.email || '',
             displayName: displayName.trim() || 'غلہ تاجر',
-            role:
-              res.user.email?.toLowerCase() === 'rahatlee97@gmail.com'
-                ? 'superadmin'
-                : 'user',
+            role: isUserSuperAdmin(res.user) ? 'superadmin' : 'user',
             businessName: businessName.trim() || 'سٹاکیہ گودام',
             mandiName: mandiName.trim() || 'غلہ منڈی',
             city: city.trim() || 'پنجاب، پاکستان',

@@ -56,6 +56,7 @@ export interface ShopVisitNote {
   totalValuePkr: number; // total estimated transaction value
   status: VisitStatus;
   notes: string;
+  isSample?: boolean;
   createdAt: number;
 }
 
@@ -84,6 +85,7 @@ export interface StockBatch {
   totalInvestedPkr: number; // Total landed cost
   effectiveCostPerMund: number; // Landed cost / physical munds
   notes: string;
+  isSample?: boolean;
   createdAt: number;
 }
 
@@ -134,3 +136,22 @@ export interface UserProfile {
   visitCount?: number;
   saleCount?: number;
 }
+
+export type RentFrequency = 'monthly' | 'quarterly' | 'half_yearly' | 'yearly';
+
+export interface GodownRentRecord {
+  id: string;
+  godamName: string; // e.g. "گودام نمبر 2 (مرکزی غلہ منڈی)"
+  location?: string;
+  rentPkr: number; // Rent per period
+  frequency: RentFrequency; // 'monthly' | 'quarterly' | 'half_yearly' | 'yearly'
+  startDate?: string;
+  nextDueDate?: string;
+  status: 'paid' | 'due' | 'advance';
+  capacityBags?: number; // total capacity in bags
+  landlordName?: string;
+  landlordPhone?: string;
+  notes?: string;
+  createdAt: number;
+}
+

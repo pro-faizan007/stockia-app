@@ -37,6 +37,7 @@ interface ShopVisitDiaryProps {
   onEditVisit: (visit: ShopVisitNote) => void;
   onDeleteVisit: (id: string) => void;
   onConvertToBatch: (visit: ShopVisitNote) => void;
+  onLoadSingleSample?: () => void;
 }
 
 export const ShopVisitDiary: React.FC<ShopVisitDiaryProps> = ({
@@ -47,6 +48,7 @@ export const ShopVisitDiary: React.FC<ShopVisitDiaryProps> = ({
   onEditVisit,
   onDeleteVisit,
   onConvertToBatch,
+  onLoadSingleSample,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [cropFilter, setCropFilter] = useState<string>(selectedCropId);
@@ -164,6 +166,41 @@ ${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` 
         </button>
       </div>
 
+      {/* Sample Entry Guidance Banner (If a sample visit note exists) */}
+      {visits.some((v) => v.isSample) && (
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-purple-900/30 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white">
+                  رہنمائی نمونہ دکان وزٹ نوٹ (Sample Visit Note)
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  SAMPLE
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-300 mt-0.5">
+                یہ دکان وزٹ نوٹ آپ کو فارمیٹ سمجھانے کے لیے نمونہ ہے۔ اپنا اصلی وزٹ لکھنے پر آپ اسے 1 کلک میں صاف کر سکتے ہیں۔
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              const sample = visits.find((v) => v.isSample);
+              if (sample) onDeleteVisit(sample.id);
+            }}
+            className="w-full sm:w-auto px-3.5 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/40 text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95"
+          >
+            نمونہ وزٹ صاف کریں (Clear Sample)
+          </button>
+        </div>
+      )}
+
       {/* Search and Filters Bar (Filter by shop number, crop type, or date range) */}
       <div className="bg-slate-900/80 p-3 sm:p-4 rounded-xl border border-slate-800 space-y-2.5">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -276,21 +313,37 @@ ${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` 
 
       {/* Notes List */}
       {filteredVisits.length === 0 ? (
-        <div className="bg-slate-800/40 rounded-2xl p-10 sm:p-12 text-center border border-dashed border-slate-700">
-          <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mx-auto text-slate-500 mb-3">
+        <div className="bg-slate-800/40 rounded-2xl p-8 sm:p-12 text-center border border-dashed border-slate-700 space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold text-white mb-1">کوئی وزٹ نوٹ نہیں ملا</h3>
-          <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">
-            تلاش کا فلٹر تبدیل کریں یا منڈی کی دکان کا نیا وزٹ نوٹ درج کریں۔
+          <h3 className="text-base sm:text-lg font-bold text-white">
+            {visits.length === 0 ? 'دکان وزٹ ڈائری فی الوقت خالی ہے (Clean Blank Diary)' : 'کوئی وزٹ نوٹ نہیں ملا'}
+          </h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">
+            {visits.length === 0
+              ? 'آپ کے اکاؤنٹ میں فی الوقت کوئی وزٹ نوٹ درج نہیں ہے۔ منڈی کی دکان کا نیا وزٹ نوٹ لکھیں یا رہنمائی کے لیے ایک نمونہ انٹری لوڈ کریں۔'
+              : 'تلاش کا فلٹر تبدیل کریں یا منڈی کی دکان کا نیا وزٹ نوٹ درج کریں۔'}
           </p>
-          <button
-            onClick={() => onOpenNewVisit(selectedCropId === 'all' ? undefined : selectedCropId)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            نیا وزٹ نوٹ لکھیں
-          </button>
+          <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+            <button
+              onClick={() => onOpenNewVisit(selectedCropId === 'all' ? undefined : selectedCropId)}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs cursor-pointer shadow-md transition-all active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>نیا وزٹ نوٹ لکھیں (+ New Visit)</span>
+            </button>
+            {visits.length === 0 && onLoadSingleSample && (
+              <button
+                type="button"
+                onClick={onLoadSingleSample}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-bold text-xs cursor-pointer transition-all active:scale-95"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>1 نمونہ وزٹ نوٹ دیکھیں (Sample Guide)</span>
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

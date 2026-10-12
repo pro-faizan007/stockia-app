@@ -262,16 +262,34 @@ export const BatchModal: React.FC<BatchModalProps> = ({
             </div>
 
             <div>
-              <label className="text-slate-300 font-semibold block mb-1">بوری وزن (Kg)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-slate-300 font-semibold text-xs">بوری وزن (Kg) *</label>
+                <span className="text-[10px] text-amber-400 font-bold">40 / 60 / 70 کلو</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 mb-1.5">
+                {[40, 60, 70].map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => setBagWeightKg(w)}
+                    className={`py-1 text-xs font-bold rounded-lg border transition-all cursor-pointer font-mono ${
+                      bagWeightKg === w
+                        ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
+                        : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                    }`}
+                  >
+                    {w} kg
+                  </button>
+                ))}
+              </div>
               <select
                 value={bagWeightKg}
                 onChange={(e) => setBagWeightKg(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono"
+                className="w-full px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono text-xs"
               >
-                <option value={50}>50 کلو بوری</option>
-                <option value={100}>100 کلو بوری</option>
-                <option value={40}>40 کلو (1 من)</option>
-                <option value={84}>84 کلو بوری</option>
+                <option value={40}>40 کلو (1 من بوری - گندم و سرسوں)</option>
+                <option value={60}>60 کلو (60 کلو بوری - مکئی)</option>
+                <option value={70}>70 کلو (70 کلو بوری - چاول و دھان)</option>
               </select>
             </div>
 

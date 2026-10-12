@@ -1,4 +1,4 @@
-import { CropConfig, MandiRateHistory, SaleRecord, ShopVisitNote, StockBatch } from '../types';
+import { CropConfig, MandiRateHistory, SaleRecord, ShopVisitNote, StockBatch, GodownRentRecord } from '../types';
 
 export const DEFAULT_CROPS: CropConfig[] = [
   {
@@ -6,7 +6,7 @@ export const DEFAULT_CROPS: CropConfig[] = [
     name: 'Wheat (Gandum)',
     urduName: 'گندم',
     season: 'Rabi Season 2026',
-    defaultBoriWeightKg: 40, // 40kg bori for wheat as requested
+    defaultBoriWeightKg: 40, // 40kg standard mund bori for wheat
     defaultMundWeightKg: 40, // 40kg standard mund
     deductionBaseKg: 50, // deduction calculated per 50kg for wheat
     deductionKg: 1.0, // 1 kg extra deduction per 50kg
@@ -23,7 +23,7 @@ export const DEFAULT_CROPS: CropConfig[] = [
     name: 'Rice / Paddy (Dhan / Basmati)',
     urduName: 'دھان / چاول',
     season: 'Kharif Season 2026',
-    defaultBoriWeightKg: 50, // 50kg bori for rice as requested
+    defaultBoriWeightKg: 70, // 70kg standard rice/paddy bori in Pakistan
     defaultMundWeightKg: 40, // 40kg standard mund
     deductionBaseKg: 100, // deduction calculated per 100kg for rice
     deductionKg: 1.5, // 1.5 kg extra deduction per 100kg
@@ -40,7 +40,7 @@ export const DEFAULT_CROPS: CropConfig[] = [
     name: 'Maize (Makki)',
     urduName: 'مکئی',
     season: 'Spring / Kharif 2026',
-    defaultBoriWeightKg: 50,
+    defaultBoriWeightKg: 60, // 60kg standard maize PP bag
     defaultMundWeightKg: 40,
     deductionBaseKg: 50,
     deductionKg: 1.5, // 1.5 kg extra deduction per 50kg
@@ -57,7 +57,7 @@ export const DEFAULT_CROPS: CropConfig[] = [
     name: 'Mustard / Canola (Sarson)',
     urduName: 'سرسوں / رایا',
     season: 'Rabi Season 2026',
-    defaultBoriWeightKg: 50,
+    defaultBoriWeightKg: 40, // 40kg standard oilseed mund bori
     defaultMundWeightKg: 40,
     deductionBaseKg: 50,
     deductionKg: 0.5,
@@ -369,3 +369,98 @@ export const INITIAL_PRICE_HISTORY: MandiRateHistory[] = [
     trend: 'stable',
   },
 ];
+
+// Single guided sample for new user onboarding
+export const SINGLE_SAMPLE_BATCH: StockBatch = {
+  id: 'sample-batch-1',
+  lotNumber: 'LOT-WHT-نمونہ',
+  cropId: 'wheat',
+  cropVariety: 'اکبر-2019 (نمونہ لاٹ)',
+  purchaseDate: new Date().toISOString().split('T')[0],
+  sellerShopNo: 'دکان نمبر 12، نیو غلہ منڈی',
+  sellerName: 'حاجی بشیر اینڈ سنز کمیشن ایجنٹ',
+  mandiName: 'نیو غلہ منڈی اوکاڑہ',
+  godamLocation: 'گودام نمبر 1 (مرکزی)',
+  initialBags: 100,
+  remainingBags: 100,
+  bagWeightKg: 40, // 40kg standard mund bori
+  grossWeightKg: 4000,
+  dhaltaExtraDeductedKg: 80, // 1kg per 50kg bag basis = 80kg
+  netBilledMunds: 98, // (4000 - 80) / 40
+  physicalMunds: 100, // 4000 / 40
+  purchaseRatePerMund: 3950,
+  totalBilledPurchasePkr: 387100, // 98 * 3950
+  bardanaCostPkr: 10000,
+  laborCostPkr: 3000,
+  totalInvestedPkr: 400100,
+  effectiveCostPerMund: 4001,
+  notes: 'یہ آپ کی رہنمائی کے لیے صرف ایک نمونہ (Sample) انٹری ہے۔ اپنا اصلی مال درج کرنے پر آپ اسے 1 کلک میں صاف کر سکتے ہیں۔',
+  isSample: true,
+  createdAt: Date.now(),
+};
+
+export const SINGLE_SAMPLE_VISIT: ShopVisitNote = {
+  id: 'sample-visit-1',
+  date: new Date().toISOString().split('T')[0],
+  shopNo: 'دکان نمبر 42-B',
+  agentName: 'حاجی رفیق غلہ آڑھت',
+  phone: '0300-1234567',
+  mandiName: 'نیو غلہ منڈی',
+  cropId: 'wheat',
+  cropVariety: 'اکبر-2019 اے ون (نمونہ وزٹ)',
+  stockQuality: 'super',
+  qualityDescription: 'صاف چمکدار دانہ، 11 فیصد نمی',
+  moisturePercent: 10.8,
+  purchasePriceUnit: 'mund',
+  purchasePricePerUnit: 3900,
+  ratePerMund: 3900,
+  ratePerBori: 3900, // 40kg bori = 1 mund
+  ratePerKg: 97.5,
+  sellingPriceInMarketPerMund: 4100,
+  quantityBags: 100,
+  boriWeightKg: 40,
+  mundWeightKg: 40,
+  deductionBaseKg: 50,
+  deductionKg: 1.0,
+  quantityMunds: 100,
+  totalDeductionKg: 80,
+  totalValuePkr: 382200,
+  status: 'visited',
+  notes: 'یہ دکان وزٹ کا رہنمائی نمونہ (Sample) نوٹ ہے۔',
+  isSample: true,
+  createdAt: Date.now(),
+};
+
+export const INITIAL_GODOWN_RENTS: GodownRentRecord[] = [
+  {
+    id: 'rent-1',
+    godamName: 'مرکزی غلہ گودام (مین بائی پاس روڈ)',
+    location: 'پلاٹ نمبر 14، غلہ منڈی روڈ، اوکاڑہ',
+    rentPkr: 45000,
+    frequency: 'monthly',
+    startDate: '2026-09-01',
+    nextDueDate: '2026-11-01',
+    status: 'paid',
+    capacityBags: 3000,
+    landlordName: 'ملک انور سائیں',
+    landlordPhone: '0300-8812345',
+    notes: 'پختہ چھت، چوکی دار اور سی سی ٹی وی کیمرے دستیاب۔',
+    createdAt: Date.now() - 3600000 * 24 * 30,
+  },
+  {
+    id: 'rent-2',
+    godamName: 'گودام نمبر 3 (ریلوے گودام روڈ)',
+    location: 'نزد ریلوے مال گودام، فیصل آباد',
+    rentPkr: 120000,
+    frequency: 'quarterly', // 3 months
+    startDate: '2026-08-01',
+    nextDueDate: '2026-11-01',
+    status: 'due',
+    capacityBags: 5000,
+    landlordName: 'چوہدری خالد محمود',
+    landlordPhone: '0321-7788990',
+    notes: 'سہ ماہی کرایہ معاہدہ (3 ماہ کا کرایہ 120,000 روپے، یعنی 40,000 روپے ماہانہ)۔',
+    createdAt: Date.now() - 3600000 * 24 * 60,
+  },
+];
+

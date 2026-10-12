@@ -14,6 +14,8 @@ import {
   BarChart3,
   Package,
   FileDown,
+  Building2,
+  Plus,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -25,7 +27,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { CropConfig, SaleRecord, ShopVisitNote, StockBatch } from '../types';
+import { CropConfig, SaleRecord, ShopVisitNote, StockBatch, GodownRentRecord } from '../types';
 import { formatMunds, formatPKR, DEFAULT_MUND_KG } from '../utils/mandiCalculations';
 import { generateFinancialAndInventoryPdf } from '../utils/pdfExport';
 
@@ -37,6 +39,10 @@ interface CombineOverviewProps {
   selectedCropId: string;
   onNavigateTab: (tab: 'combine' | 'visits' | 'godam' | 'calculator' | 'fluctuations' | 'settings') => void;
   onSelectCrop: (cropId: string) => void;
+  rents?: GodownRentRecord[];
+  onClearSamples?: () => void;
+  onLoadSingleSample?: () => void;
+  onNavigateGodownRent?: () => void;
 }
 
 export const CombineOverview: React.FC<CombineOverviewProps> = ({
@@ -47,6 +53,10 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
   selectedCropId,
   onNavigateTab,
   onSelectCrop,
+  rents = [],
+  onClearSamples,
+  onLoadSingleSample,
+  onNavigateGodownRent,
 }) => {
   // Filter by selectedCropId if not 'all'
   const filteredBatches = selectedCropId === 'all'
@@ -125,6 +135,18 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
   // Combined Total Deductions across inventory & transactions in PKR
   const totalDeductionsPkr = totalPurchaseDeductionsPkr + totalSalesDeductionsPkr;
   const totalDeductionsKg = totalPurchaseDeductionsKg + totalSalesDeductionsKg;
+
+  // Normalized Rent Totals
+  const totalMonthlyRentPkr = rents.reduce((sum, r) => {
+    let m = r.rentPkr;
+    if (r.frequency === 'quarterly') m = r.rentPkr / 3;
+    else if (r.frequency === 'half_yearly') m = r.rentPkr / 6;
+    else if (r.frequency === 'yearly') m = r.rentPkr / 12;
+    return sum + m;
+  }, 0);
+  const totalQuarterlyRentPkr = totalMonthlyRentPkr * 3;
+  const totalHalfYearlyRentPkr = totalMonthlyRentPkr * 6;
+  const totalYearlyRentPkr = totalMonthlyRentPkr * 12;
 
   // 4. Monthly Chart Data
   const monthlyDataMap: Record<
@@ -261,6 +283,101 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
         </div>
       </div>
 
+      {/* Sample Entry Guidance Banner (If a sample batch or visit exists) */}
+      {(batches.some((b) => b.isSample) || visits.some((v) => v.isSample)) && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-purple-900/30 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-white">
+                  رہنمائی نمونہ ڈیٹا (Sample Onboarding Record)
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  GUIDE
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                نئے اکاؤنٹ کی رہنمائی کے لیے ایک نمونہ انٹری دکھائی جا رہی ہے۔ آپ اپنا اصلی مال درج کرنے پر اسے 1 کلک میں صاف کر سکتے ہیں۔
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {onClearSamples && (
+              <button
+                type="button"
+                onClick={onClearSamples}
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-500/25 hover:bg-purple-500/35 text-purple-200 border border-purple-500/50 text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95"
+              >
+                نمونہ ڈیٹا صاف کریں (Clear Sample)
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => onNavigateTab('godam')}
+              className="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95"
+            >
+              + اپنا اصلی مال درج کریں
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Fresh Clean Dashboard Welcome (If user has 0 batches and 0 sales) */}
+      {batches.length === 0 && sales.length === 0 && (
+        <div className="p-6 sm:p-7 rounded-2xl bg-gradient-to-r from-amber-500/10 via-slate-900 to-emerald-500/10 border border-amber-500/30 text-center space-y-3.5 shadow-xl">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30 shadow-inner">
+            <Warehouse className="w-7 h-7" />
+          </div>
+          <h3 className="text-lg sm:text-xl font-black text-white">
+            خوش آمدید! آپ کا غلہ منڈی ڈیش بورڈ بالکل صاف و تیار ہے
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+            آپ کے نئے اکاؤنٹ میں کوئی غیر ضروری فرضی ڈیٹا نہیں ہے۔ آپ کا کھاتہ 100 فیصد محفوظ اور خالی ہے۔ اب آپ اپنا اصلی خریدا ہوا اناج، دکان وزٹ نوٹ، یا گودام کا کرایہ شروع کر سکتے ہیں۔
+          </p>
+          <div className="flex items-center justify-center gap-2.5 pt-1 flex-wrap">
+            <button
+              type="button"
+              onClick={() => onNavigateTab('godam')}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-amber-500/20 cursor-pointer active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>پہلا گودام مال داخل کریں (+ Stock Lot)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigateTab('visits')}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>پہلا دکان وزٹ نوٹ لکھیں (+ Visit Note)</span>
+            </button>
+            <button
+              type="button"
+              onClick={onNavigateGodownRent || (() => onNavigateTab('godam'))}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 font-bold text-xs transition-all cursor-pointer active:scale-95"
+            >
+              <Building2 className="w-4 h-4" />
+              <span>گودام کرایہ درج کریں (+ Godown Rent)</span>
+            </button>
+            {onLoadSingleSample && (
+              <button
+                type="button"
+                onClick={onLoadSingleSample}
+                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-bold text-xs transition-all cursor-pointer active:scale-95"
+                title="سسٹم سمجھنے کے لیے صرف ایک نمونہ انٹری دیکھیں"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>صرف 1 نمونہ انٹری دیکھیں (Sample Guide)</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* CORE KPI CARDS GRID (Requested by user) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: TOTAL SALES IN PKR */}
@@ -371,6 +488,133 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* GODOWN RENT & KIRAYA MULTI-CYCLE OVERVIEW (Monthly, 3-Monthly, 6-Monthly, Yearly) */}
+      <div className="bg-slate-800/90 rounded-2xl p-4 sm:p-5 border border-slate-700/80 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
+          <div>
+            <div className="flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-amber-400" />
+              <h2 className="text-base sm:text-lg font-black text-white">
+                گودام کرایہ و سٹوریج فئیر خلاصہ (Godown Rent & Kiraya Summary)
+              </h2>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                ماہانہ، سہ ماہی، چھ ماہی، سالانہ
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-0.5">
+              سٹاک کے تحفظ کے لیے گوداموں کے ماہانہ، 3 ماہ (سہ ماہی)، 6 ماہ (چھ ماہی) اور سالانہ کرایہ اخراجات کا تفصیلی حساب۔
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onNavigateGodownRent || (() => onNavigateTab('godam'))}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all cursor-pointer shadow-sm active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>گودام کرایہ کھاتہ کھولیں ({rents.length} گودام)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Multi-Cycle Duration Cards Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-700/80">
+            <div className="flex items-center justify-between text-slate-400 text-[11px] mb-1">
+              <span>ماہانہ کرایہ (1 Month)</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono">MONTHLY</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-white font-mono">
+              {formatPKR(Math.round(totalMonthlyRentPkr))}
+            </div>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">
+              30 دن کا معمول کا گودام خرچ
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-900/90 border border-amber-500/30">
+            <div className="flex items-center justify-between text-amber-300 text-[11px] mb-1">
+              <span>سہ ماہی کرایہ (3 Months)</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono">QUARTERLY</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-amber-400 font-mono">
+              {formatPKR(Math.round(totalQuarterlyRentPkr))}
+            </div>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">
+              ہر 3 ماہ بعد واجب الادا فئیر
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-900/90 border border-purple-500/30">
+            <div className="flex items-center justify-between text-purple-300 text-[11px] mb-1">
+              <span>چھ ماہی کرایہ (6 Months)</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">HALF-YEARLY</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-purple-300 font-mono">
+              {formatPKR(Math.round(totalHalfYearlyRentPkr))}
+            </div>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">
+              فصل تا فصل (6 ماہ) کا تخمینہ
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-slate-900/90 border border-emerald-500/30">
+            <div className="flex items-center justify-between text-emerald-300 text-[11px] mb-1">
+              <span>سالانہ کرایہ (12 Months)</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">ANNUAL</span>
+            </div>
+            <div className="text-lg sm:text-xl font-black text-emerald-400 font-mono">
+              {formatPKR(Math.round(totalYearlyRentPkr))}
+            </div>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">
+              مکمل سال کا مجموعی کرایہ
+            </span>
+          </div>
+        </div>
+
+        {/* Mini Table of Rented Godowns if records exist */}
+        {rents.length > 0 && (
+          <div className="pt-2 border-t border-slate-700/60 overflow-x-auto">
+            <table className="w-full text-xs text-right text-slate-300">
+              <thead>
+                <tr className="text-slate-400 border-b border-slate-800 text-[11px]">
+                  <th className="py-1.5 px-2 font-semibold">گودام نام</th>
+                  <th className="py-1.5 px-2 font-semibold">مدت / سائیکل</th>
+                  <th className="py-1.5 px-2 font-semibold">کرایہ رقم</th>
+                  <th className="py-1.5 px-2 font-semibold">اگلی تاریخ ادائیگی</th>
+                  <th className="py-1.5 px-2 font-semibold text-center">حالت</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60 font-sans">
+                {rents.map((r) => (
+                  <tr key={r.id} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="py-2 px-2 font-bold text-white flex items-center gap-1.5">
+                      <Warehouse className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{r.godamName}</span>
+                    </td>
+                    <td className="py-2 px-2">
+                      {r.frequency === 'monthly' ? 'ماہانہ (1 ماہ)' : r.frequency === 'quarterly' ? 'سہ ماہی (3 ماہ)' : r.frequency === 'half_yearly' ? 'چھ ماہی (6 ماہ)' : 'سالانہ (1 سال)'}
+                    </td>
+                    <td className="py-2 px-2 font-mono font-bold text-amber-300">
+                      {formatPKR(r.rentPkr)}
+                    </td>
+                    <td className="py-2 px-2 font-mono text-slate-400">
+                      {r.nextDueDate || '—'}
+                    </td>
+                    <td className="py-2 px-2 text-center">
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${r.status === 'paid' ? 'bg-emerald-500/20 text-emerald-400' : r.status === 'advance' ? 'bg-blue-500/20 text-blue-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                        {r.status === 'paid' ? 'ادا شدہ' : r.status === 'advance' ? 'پیشگی ادا' : 'واجب الادا'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* DEDICATED SECTION: SUMMARY OF CURRENT STOCK INVENTORY FOR ALL CROPS */}

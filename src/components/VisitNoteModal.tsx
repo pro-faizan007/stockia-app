@@ -53,7 +53,7 @@ export const VisitNoteModal: React.FC<VisitNoteModalProps> = ({
   // Volume & Bag Settings (from crop)
   const [quantityBags, setQuantityBags] = useState<number>(initialVisit?.quantityBags || 100);
   const [boriWeightKg, setBoriWeightKg] = useState<number>(
-    initialVisit?.boriWeightKg || selectedCropObj.defaultBoriWeightKg || 50
+    initialVisit?.boriWeightKg || selectedCropObj.defaultBoriWeightKg || 40
   );
   const [mundWeightKg, setMundWeightKg] = useState<number>(
     initialVisit?.mundWeightKg || selectedCropObj.defaultMundWeightKg || 40
@@ -411,7 +411,25 @@ export const VisitNoteModal: React.FC<VisitNoteModalProps> = ({
             </div>
 
             <div>
-              <label className="text-slate-300 font-semibold block mb-1">بوری وزن (Kg)</label>
+              <div className="flex justify-between items-center mb-1">
+                <label className="text-slate-300 font-semibold text-[11px]">بوری وزن (Kg)</label>
+                <div className="flex items-center gap-1">
+                  {[40, 60, 70].map((w) => (
+                    <button
+                      key={w}
+                      type="button"
+                      onClick={() => setBoriWeightKg(w)}
+                      className={`text-[9px] px-1.5 py-0.5 rounded font-mono cursor-pointer ${
+                        boriWeightKg === w
+                          ? 'bg-amber-400 text-slate-950 font-bold'
+                          : 'bg-slate-700 text-slate-300 hover:bg-slate-650'
+                      }`}
+                    >
+                      {w}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <input
                 type="number"
                 inputMode="decimal"

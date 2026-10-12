@@ -12,7 +12,7 @@ service cloud.firestore {
     }
 
     function isSuperAdmin() {
-      return isSignedIn() && request.auth.token.email == 'rahatlee97@gmail.com';
+      return isSignedIn() && (request.auth.token.email == 'rahatlee97@gmail.com' || request.auth.token.email == 'faizanhafeez000@gmail.com');
     }
 
     function isOwner(userId) {
@@ -58,6 +58,11 @@ service cloud.firestore {
 
       // Mandi Rate History subcollection
       match /rateHistory/{historyId} {
+        allow read, write: if isOwner(userId) || isSuperAdmin();
+      }
+
+      // Godown Rent & Kiraya subcollection
+      match /godownRents/{rentId} {
         allow read, write: if isOwner(userId) || isSuperAdmin();
       }
     }

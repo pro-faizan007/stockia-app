@@ -16,11 +16,21 @@ import {
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
+const effectiveConfig = {
+  ...firebaseConfig,
+  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY as string) || firebaseConfig.apiKey,
+  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string) || firebaseConfig.authDomain,
+  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID as string) || firebaseConfig.projectId,
+  firestoreDatabaseId:
+    (import.meta.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID as string) ||
+    firebaseConfig.firestoreDatabaseId,
+};
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(effectiveConfig);
 
 // CRITICAL: Initialize Firestore with firestoreDatabaseId as required by skill
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = getFirestore(app, effectiveConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 
 export const SUPER_ADMIN_EMAIL = 'rahatlee97@gmail.com';
@@ -112,7 +122,14 @@ export async function logOutUser() {
   return await signOut(auth);
 }
 
+export const ADMIN_EMAILS = [
+  'rahatlee97@gmail.com',
+  'faizanhafeez000@gmail.com'
+];
+
 export function isUserSuperAdmin(user: FirebaseUser | null): boolean {
   if (!user || !user.email) return false;
-  return user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  const emailLower = user.email.toLowerCase();
+  return ADMIN_EMAILS.some((admin) => admin.toLowerCase() === emailLower);
 }
+

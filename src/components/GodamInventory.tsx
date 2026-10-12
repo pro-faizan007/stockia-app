@@ -21,9 +21,11 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  Building2,
 } from 'lucide-react';
-import { CropConfig, SaleRecord, StockBatch } from '../types';
+import { CropConfig, SaleRecord, StockBatch, GodownRentRecord } from '../types';
 import { formatMunds, formatPKR, MUND_KG } from '../utils/mandiCalculations';
+import { GodownRentManager } from './GodownRentManager';
 
 type SortField = 'date' | 'price' | 'weight';
 type SortOrder = 'desc' | 'asc';
@@ -37,6 +39,11 @@ interface GodamInventoryProps {
   onDeleteBatch: (id: string) => void;
   onRecordSale: (batch: StockBatch) => void;
   sales: SaleRecord[];
+  rents?: GodownRentRecord[];
+  onSaveRent?: (rent: GodownRentRecord) => void;
+  onDeleteRent?: (id: string) => void;
+  initialSubTab?: 'batches' | 'rent';
+  onLoadSingleSample?: () => void;
 }
 
 export const GodamInventory: React.FC<GodamInventoryProps> = ({
@@ -48,7 +55,19 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
   onDeleteBatch,
   onRecordSale,
   sales,
+  rents = [],
+  onSaveRent = () => {},
+  onDeleteRent = () => {},
+  initialSubTab = 'batches',
+  onLoadSingleSample,
 }) => {
+  const [activeSubTab, setActiveSubTab] = useState<'batches' | 'rent'>(initialSubTab);
+
+  React.useEffect(() => {
+    if (initialSubTab) {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
   const [filterStatus, setFilterStatus] = useState<'all' | 'in_stock' | 'sold'>('in_stock');
   const [searchQuery, setSearchQuery] = useState('');
   const [cropFilter, setCropFilter] = useState<string>(selectedCropId);
@@ -169,11 +188,11 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
               گودام سٹاک و ہولڈنگ (Warehouse Inventory)
             </h1>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
-              Active Stock
+              Active Stock & Rent
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            سٹاک میں موجود اجناس، خرید ریٹ، باردانہ، پلے داری، اور آج کے منڈی ریٹ کے حساب سے لائیو نفع/نقصان۔
+            سٹاک میں موجود اجناس، خرید ریٹ، باردانہ، پلے داری، اور گودام کے ماہانہ و سہ ماہی کرایہ جات کا مکمل کھاتہ۔
           </p>
         </div>
 
@@ -186,33 +205,112 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
         </button>
       </div>
 
-      {/* Snapshot Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-xs">
-        <div>
-          <span className="text-slate-400 block">گودام میں کل مال</span>
-          <span className="text-lg font-black text-white">
-            {totalBagsHolding} بوری <span className="text-amber-400 text-xs font-semibold">({formatMunds(totalMundsHolding)} من)</span>
+      {/* Sub-navigation Switcher: Grain Stock Lots vs Godown Rent & Kiraya */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800">
+        <button
+          type="button"
+          onClick={() => setActiveSubTab('batches')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            activeSubTab === 'batches'
+              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+          }`}
+        >
+          <Warehouse className="w-4 h-4" />
+          <span>اسٹاک لاٹس و ہولڈنگ (Stock Batches)</span>
+          <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-950/40 font-mono">
+            {batches.length}
           </span>
-        </div>
-        <div>
-          <span className="text-slate-400 block">لگا ہوا سرمایہ (Landed Cost)</span>
-          <span className="text-lg font-black text-blue-400">
-            {formatPKR(totalCapitalInvested)}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveSubTab('rent')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+            activeSubTab === 'rent'
+              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+          }`}
+        >
+          <Building2 className="w-4 h-4" />
+          <span>گودام کرایہ و اخراجات (Godown Rent & Kiraya)</span>
+          <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-950/40 font-mono">
+            {rents.length}
           </span>
-        </div>
-        <div>
-          <span className="text-slate-400 block">آج کی منڈی ویلیو</span>
-          <span className="text-lg font-black text-emerald-400">
-            {formatPKR(totalCurrentMarketValue)}
-          </span>
-        </div>
-        <div>
-          <span className="text-slate-400 block">متوقع غیر فروخت شدہ نفع</span>
-          <span className={`text-lg font-black ${totalUnrealizedGain >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {totalUnrealizedGain >= 0 ? `+${formatPKR(totalUnrealizedGain)}` : formatPKR(totalUnrealizedGain)}
-          </span>
-        </div>
+        </button>
       </div>
+
+      {activeSubTab === 'rent' ? (
+        <GodownRentManager
+          rents={rents}
+          onSaveRent={onSaveRent}
+          onDeleteRent={onDeleteRent}
+          totalOccupiedBags={totalBagsHolding}
+        />
+      ) : (
+        <>
+          {/* Sample Entry Guidance Banner (If a sample batch exists) */}
+          {batches.some((b) => b.isSample) && (
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-purple-900/30 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white">
+                      رہنمائی نمونہ لاٹ (Sample Guidance Entry)
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                      SAMPLE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    یہ انٹری آپ کو سسٹم اور ڈھلتا فارمولا سمجھانے کے لیے نمونہ ہے۔ اپنا اصلی مال درج کرنے پر آپ اسے 1 کلک میں صاف کر سکتے ہیں۔
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const sample = batches.find((b) => b.isSample);
+                  if (sample) onDeleteBatch(sample.id);
+                }}
+                className="w-full sm:w-auto px-3.5 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/40 text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95"
+              >
+                نمونہ لاٹ صاف کریں (Clear Sample)
+              </button>
+            </div>
+          )}
+
+          {/* Snapshot Summary Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-xs">
+            <div>
+              <span className="text-slate-400 block">گودام میں کل مال</span>
+              <span className="text-lg font-black text-white">
+                {totalBagsHolding} بوری <span className="text-amber-400 text-xs font-semibold">({formatMunds(totalMundsHolding)} من)</span>
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-400 block">لگا ہوا سرمایہ (Landed Cost)</span>
+              <span className="text-lg font-black text-blue-400">
+                {formatPKR(totalCapitalInvested)}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-400 block">آج کی منڈی ویلیو</span>
+              <span className="text-lg font-black text-emerald-400">
+                {formatPKR(totalCurrentMarketValue)}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-400 block">متوقع غیر فروخت شدہ نفع</span>
+              <span className={`text-lg font-black ${totalUnrealizedGain >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {totalUnrealizedGain >= 0 ? `+${formatPKR(totalUnrealizedGain)}` : formatPKR(totalUnrealizedGain)}
+              </span>
+            </div>
+          </div>
 
       {/* Search & Filter Bar (Shop number, Crop type, Date range) */}
       <div className="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-3">
@@ -400,18 +498,36 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
 
       {/* Batches Grid */}
       {sortedBatches.length === 0 ? (
-        <div className="bg-slate-800/40 rounded-2xl p-12 text-center border border-dashed border-slate-700">
-          <Warehouse className="w-10 h-10 text-slate-500 mx-auto mb-2" />
-          <h3 className="text-base font-bold text-white mb-1">کوئی سٹاک لاٹ نہیں ملا</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
-            اس فلٹر کے مطابق کوئی مال موجود نہیں۔ نیا خریدا ہوا مال داخل کریں۔
+        <div className="bg-slate-800/40 rounded-2xl p-8 sm:p-12 text-center border border-dashed border-slate-700 space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+            <Warehouse className="w-6 h-6" />
+          </div>
+          <h3 className="text-base sm:text-lg font-bold text-white">
+            {batches.length === 0 ? 'گودام فی الوقت خالی ہے (Clean Blank Warehouse)' : 'کوئی سٹاک لاٹ نہیں ملا'}
+          </h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">
+            {batches.length === 0
+              ? 'آپ کے اکاؤنٹ میں فی الوقت کوئی لاٹ موجود نہیں ہے۔ اپنا پہلا مال داخل کریں، یا سسٹم سمجھنے کے لیے ایک نمونہ انٹری لوڈ کریں۔'
+              : 'اس فلٹر یا سرچ کے مطابق کوئی مال موجود نہیں۔ فلٹر ری سیٹ کریں یا نیا مال داخل کریں۔'}
           </p>
-          <button
-            onClick={() => onOpenNewBatch(selectedCropId === 'all' ? undefined : selectedCropId)}
-            className="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-lg cursor-pointer"
-          >
-            نیا مال داخل کریں
-          </button>
+          <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+            <button
+              onClick={() => onOpenNewBatch(selectedCropId === 'all' ? undefined : selectedCropId)}
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl cursor-pointer active:scale-95 shadow-md transition-all"
+            >
+              + نیا مال داخل کریں (+ New Batch)
+            </button>
+            {batches.length === 0 && onLoadSingleSample && (
+              <button
+                type="button"
+                onClick={onLoadSingleSample}
+                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-bold text-xs transition-all cursor-pointer active:scale-95"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>1 نمونہ لاٹ دیکھیں (Sample Guide)</span>
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -440,13 +556,18 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
                   {/* Top Bar: Lot #, Crop, Godam location */}
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-900 border border-slate-700 font-bold text-amber-400">
                           {batch.lotNumber}
                         </span>
                         <span className="text-sm font-black text-white">
                           {crop?.urduName || batch.cropId} ({batch.cropVariety})
                         </span>
+                        {batch.isSample && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                            نمونہ انٹری (Sample)
+                          </span>
+                        )}
                       </div>
                       <div className="text-xs text-slate-400 mt-1 flex items-center gap-2">
                         <span className="flex items-center gap-1">
@@ -599,6 +720,8 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
             );
           })}
         </div>
+      )}
+        </>
       )}
     </div>
   );

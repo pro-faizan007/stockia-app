@@ -9,7 +9,7 @@ import {
   orderBy,
   writeBatch,
 } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType, SUPER_ADMIN_EMAIL } from './firebase';
+import { db, handleFirestoreError, OperationType } from './firebase';
 import {
   UserProfile,
   CropConfig,
@@ -17,6 +17,7 @@ import {
   StockBatch,
   SaleRecord,
   MandiRateHistory,
+  GodownRentRecord,
 } from '../types';
 
 // ==========================================
@@ -228,3 +229,39 @@ export async function saveUserRateHistory(
     handleFirestoreError(error, OperationType.WRITE, path);
   }
 }
+
+// ==========================================
+// 7. User Godown Rents & Kiraya
+// ==========================================
+export async function fetchUserGodownRents(userId: string): Promise<GodownRentRecord[]> {
+  const path = `users/${userId}/godownRents`;
+  try {
+    const q = query(collection(db, 'users', userId, 'godownRents'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => d.data() as GodownRentRecord);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+  }
+}
+
+export async function saveUserGodownRent(
+  userId: string,
+  rent: GodownRentRecord
+): Promise<void> {
+  const path = `users/${userId}/godownRents/${rent.id}`;
+  try {
+    await setDoc(doc(db, 'users', userId, 'godownRents', rent.id), rent);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+  }
+}
+
+export async function deleteUserGodownRent(userId: string, rentId: string): Promise<void> {
+  const path = `users/${userId}/godownRents/${rentId}`;
+  try {
+    await deleteDoc(doc(db, 'users', userId, 'godownRents', rentId));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
+}
+

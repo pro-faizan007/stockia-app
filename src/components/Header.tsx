@@ -262,8 +262,8 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Warehouse className="w-4 h-4 shrink-0" />
-              <span>گودام سٹاک</span>
-              <span className="text-[10px] opacity-70 hidden xl:inline">(Godam)</span>
+              <span>گودام سٹاک و کرایہ</span>
+              <span className="text-[10px] opacity-70 hidden xl:inline">(Godam & Rent)</span>
             </button>
 
             <button

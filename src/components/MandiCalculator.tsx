@@ -6,11 +6,14 @@ import {
   RefreshCw,
   Copy,
   CheckCircle,
+  CheckCircle2,
   HelpCircle,
   DollarSign,
   Layers,
+  Building2,
+  Calendar,
 } from 'lucide-react';
-import { CropConfig } from '../types';
+import { CropConfig, RentFrequency } from '../types';
 import { calculateMandiLot, formatMunds, formatPKR, MUND_KG } from '../utils/mandiCalculations';
 
 interface MandiCalculatorProps {
@@ -24,7 +27,7 @@ export const MandiCalculator: React.FC<MandiCalculatorProps> = ({ crops, selecte
 
   // Inputs
   const [bags, setBags] = useState<number>(100);
-  const [bagWeightKg, setBagWeightKg] = useState<number>(activeCrop.defaultBoriWeightKg || 50);
+  const [bagWeightKg, setBagWeightKg] = useState<number>(activeCrop.defaultBoriWeightKg || 40);
   const [mundWeightKg, setMundWeightKg] = useState<number>(activeCrop.defaultMundWeightKg || 40);
   const [deductionBaseKg, setDeductionBaseKg] = useState<number>(activeCrop.deductionBaseKg || 50);
   const [deductionKg, setDeductionKg] = useState<number>(activeCrop.deductionKg ?? 1.0);
@@ -32,13 +35,19 @@ export const MandiCalculator: React.FC<MandiCalculatorProps> = ({ crops, selecte
   const [bardanaPerBag, setBardanaPerBag] = useState<number>(0);
   const [laborPerBag, setLaborPerBag] = useState<number>(0);
 
+  // Godown Rent & Kiraya Multi-Cycle Calculator State
+  const [rentAmount, setRentAmount] = useState<number>(35000);
+  const [rentFrequency, setRentFrequency] = useState<RentFrequency>('monthly');
+  const [rentBags, setRentBags] = useState<number>(1000);
+  const [copiedRentSlip, setCopiedRentSlip] = useState(false);
+
   // Quick switch crop preset
   const handleSelectCropPreset = (crop: CropConfig) => {
-    setBagWeightKg(crop.defaultBoriWeightKg);
-    setMundWeightKg(crop.defaultMundWeightKg);
-    setDeductionBaseKg(crop.deductionBaseKg);
-    setDeductionKg(crop.deductionKg);
-    setRatePerMund(crop.currentMarketRatePerMund);
+    setBagWeightKg(crop.defaultBoriWeightKg || 40);
+    setMundWeightKg(crop.defaultMundWeightKg || 40);
+    setDeductionBaseKg(crop.deductionBaseKg || 50);
+    setDeductionKg(crop.deductionKg ?? 1.0);
+    setRatePerMund(crop.currentMarketRatePerMund || 3950);
   };
 
   // Perform calculation
@@ -170,50 +179,50 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               />
             </div>
 
-            {/* 2. Bag Weight Preset (50kg vs 100kg vs 40kg) */}
+            {/* 2. Bag Weight Preset (40kg vs 60kg vs 70kg only) */}
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="text-xs font-semibold text-slate-300">
                   فی بوری وزن (Bag Weight in Kg)
                 </label>
-                <span className="text-[11px] text-slate-400">سٹینڈرڈ سائز چنیں</span>
+                <span className="text-[11px] text-amber-400 font-bold">40 / 60 / 70 کلو معیاری سائز</span>
               </div>
-              <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2">
-                <button
-                  type="button"
-                  onClick={() => setBagWeightKg(50)}
-                  className={`py-2 px-1 sm:px-3 rounded-lg text-xs font-bold transition-colors cursor-pointer border text-center ${
-                    bagWeightKg === 50
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black'
-                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="block text-xs font-mono">50 kg</span>
-                  <span className="block text-[10px] opacity-80">معیاری بوری</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBagWeightKg(100)}
-                  className={`py-2 px-1 sm:px-3 rounded-lg text-xs font-bold transition-colors cursor-pointer border text-center ${
-                    bagWeightKg === 100
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black'
-                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="block text-xs font-mono">100 kg</span>
-                  <span className="block text-[10px] opacity-80">بڑا توڑا</span>
-                </button>
+              <div className="grid grid-cols-3 gap-2 mb-2">
                 <button
                   type="button"
                   onClick={() => setBagWeightKg(40)}
-                  className={`py-2 px-1 sm:px-3 rounded-lg text-xs font-bold transition-colors cursor-pointer border text-center ${
+                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
                     bagWeightKg === 40
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black'
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
                       : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
                   }`}
                 >
-                  <span className="block text-xs font-mono">40 kg</span>
-                  <span className="block text-[10px] opacity-80">1 من بوری</span>
+                  <span className="block text-sm font-mono font-black">40 kg</span>
+                  <span className="block text-[10px] opacity-85">1 من بوری (گندم/سرسوں)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBagWeightKg(60)}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                    bagWeightKg === 60
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
+                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
+                  }`}
+                >
+                  <span className="block text-sm font-mono font-black">60 kg</span>
+                  <span className="block text-[10px] opacity-85">60 کلو بوری (مکئی)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBagWeightKg(70)}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                    bagWeightKg === 70
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
+                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
+                  }`}
+                >
+                  <span className="block text-sm font-mono font-black">70 kg</span>
+                  <span className="block text-[10px] opacity-85">70 کلو بوری (چاول/دھان)</span>
                 </button>
               </div>
               <div className="flex items-center gap-2">
@@ -434,6 +443,177 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
           </div>
         </div>
       </div>
+
+      {/* 3. Godown Rent & Kiraya Multi-Cycle Calculator (Monthly, 3-Monthly, 6-Monthly, Yearly) */}
+      {(() => {
+        let monthlyEquivalent = Number(rentAmount) || 0;
+        if (rentFrequency === 'quarterly') monthlyEquivalent = (Number(rentAmount) || 0) / 3;
+        else if (rentFrequency === 'half_yearly') monthlyEquivalent = (Number(rentAmount) || 0) / 6;
+        else if (rentFrequency === 'yearly') monthlyEquivalent = (Number(rentAmount) || 0) / 12;
+
+        const rent1Month = Math.round(monthlyEquivalent);
+        const rent3Months = Math.round(monthlyEquivalent * 3);
+        const rent6Months = Math.round(monthlyEquivalent * 6);
+        const rent12Months = Math.round(monthlyEquivalent * 12);
+        const costPerBagPerMonth = rentBags && rentBags > 0 ? monthlyEquivalent / rentBags : 0;
+
+        const handleCopyRentSlip = () => {
+          const slip = `🏛️ *گودام کرایہ و فئیر پرچی (Godown Rent Calculation)*
+-----------------------------------
+🏢 *درج کردہ کرایہ:* ₨ ${rentAmount.toLocaleString()} (${rentFrequency === 'monthly' ? 'ماہانہ' : rentFrequency === 'quarterly' ? 'سہ ماہی (3 ماہ)' : rentFrequency === 'half_yearly' ? 'چھ ماہی (6 ماہ)' : 'سالانہ (12 ماہ)'})
+📦 *گودام میں بوریاں:* ${rentBags.toLocaleString()} بوری
+-----------------------------------
+📅 *ماہانہ کرایہ (1 Month):* ₨ ${rent1Month.toLocaleString()}
+📅 *سہ ماہی کرایہ (3 Months):* ₨ ${rent3Months.toLocaleString()}
+📅 *چھ ماہی کرایہ (6 Months):* ₨ ${rent6Months.toLocaleString()}
+📅 *سالانہ کرایہ (1 Year):* ₨ ${rent12Months.toLocaleString()}
+💰 *فی بوری ماہانہ کرایہ خرچ:* ₨ ${costPerBagPerMonth.toFixed(1)} / بوری`;
+
+          navigator.clipboard.writeText(slip);
+          setCopiedRentSlip(true);
+          setTimeout(() => setCopiedRentSlip(false), 2500);
+        };
+
+        return (
+          <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 rounded-2xl p-5 border border-amber-500/40 shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-black text-white">
+                      گودام کرایہ و فئیر کیلکولیٹر (Godown Rent & Kiraya)
+                    </h2>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      ماہانہ و سہ ماہی
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    گودام کا کرایہ ماہانہ، 3 ماہ (سہ ماہی)، 6 ماہ (چھ ماہی) یا سالانہ بنیاد پر خودکار تبدیل کریں اور فی بوری خرچ نکالیں۔
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyRentSlip}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs font-bold transition-all cursor-pointer active:scale-95"
+              >
+                {copiedRentSlip ? (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>کرایہ پرچی کاپی ہو گئی!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>کرایہ پرچی کاپی کریں</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Inputs Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-300 block mb-1">
+                  کرایہ رقم (Rent Amount in PKR) *
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">₨</span>
+                  <input
+                    type="number"
+                    min="0"
+                    value={rentAmount || ''}
+                    onChange={(e) => setRentAmount(Number(e.target.value))}
+                    className="w-full pl-8 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white font-mono font-bold text-sm focus:outline-none focus:border-amber-500"
+                    placeholder="مثال: 35000"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-300 block mb-1">
+                  کرایہ کی بنیاد / مدت (Billing Basis) *
+                </label>
+                <select
+                  value={rentFrequency}
+                  onChange={(e) => setRentFrequency(e.target.value as RentFrequency)}
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-amber-300 font-bold text-xs focus:outline-none focus:border-amber-500"
+                >
+                  <option value="monthly">ماہانہ بنیاد (Monthly - 1 Month)</option>
+                  <option value="quarterly">3 ماہ / سہ ماہی بنیاد (Quarterly - 3 Months)</option>
+                  <option value="half_yearly">6 ماہ / چھ ماہی بنیاد (Half-Yearly - 6 Months)</option>
+                  <option value="yearly">سالانہ بنیاد (Yearly - 12 Months)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-300 block mb-1">
+                  گودام میں کل بوریاں (Total Bags Stored)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={rentBags || ''}
+                  onChange={(e) => setRentBags(Number(e.target.value))}
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white font-mono text-sm focus:outline-none focus:border-amber-500"
+                  placeholder="مثال: 1000"
+                />
+              </div>
+            </div>
+
+            {/* Calculated Breakdown Across All 4 Periods */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+              {/* Monthly */}
+              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700">
+                <span className="text-[10px] text-slate-400 block font-semibold uppercase">ماہانہ کرایہ (1 Month)</span>
+                <span className="text-base sm:text-lg font-black text-white font-mono">
+                  {formatPKR(rent1Month)}
+                </span>
+                <span className="text-[10px] text-amber-400 block mt-0.5">
+                  ₨ {costPerBagPerMonth.toFixed(1)} فی بوری / ماہ
+                </span>
+              </div>
+
+              {/* Quarterly (3 Months) */}
+              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-amber-500/30">
+                <span className="text-[10px] text-amber-300 block font-semibold uppercase">سہ ماہی کرایہ (3 Months)</span>
+                <span className="text-base sm:text-lg font-black text-amber-400 font-mono">
+                  {formatPKR(rent3Months)}
+                </span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  ہر 3 ماہ کی مجموعی رقم
+                </span>
+              </div>
+
+              {/* Half-Yearly (6 Months) */}
+              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-purple-500/30">
+                <span className="text-[10px] text-purple-300 block font-semibold uppercase">چھ ماہی کرایہ (6 Months)</span>
+                <span className="text-base sm:text-lg font-black text-purple-400 font-mono">
+                  {formatPKR(rent6Months)}
+                </span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  ایک سیزن (6 ماہ) کی لاگت
+                </span>
+              </div>
+
+              {/* Yearly (12 Months) */}
+              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-emerald-500/30">
+                <span className="text-[10px] text-emerald-300 block font-semibold uppercase">سالانہ کرایہ (12 Months)</span>
+                <span className="text-base sm:text-lg font-black text-emerald-400 font-mono">
+                  {formatPKR(rent12Months)}
+                </span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  مکمل سال کا گودام خرچ
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };

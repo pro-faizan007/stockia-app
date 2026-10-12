@@ -19,6 +19,9 @@ import {
   INITIAL_SALES,
   INITIAL_STOCK_BATCHES,
   INITIAL_VISIT_NOTES,
+  SINGLE_SAMPLE_BATCH,
+  SINGLE_SAMPLE_VISIT,
+  INITIAL_GODOWN_RENTS,
 } from './utils/mockData';
 import {
   CropConfig,
@@ -28,6 +31,7 @@ import {
   StockBatch,
   AppTheme,
   UserProfile,
+  GodownRentRecord,
 } from './types';
 import {
   auth,
@@ -53,6 +57,9 @@ import {
   saveUserSale,
   fetchUserRateHistory,
   saveUserRateHistory,
+  fetchUserGodownRents,
+  saveUserGodownRent,
+  deleteUserGodownRent,
 } from './lib/dataService';
 import {
   RotateCcw,
@@ -93,10 +100,11 @@ export default function App() {
 
   // 2. Data State
   const [crops, setCrops] = useState<CropConfig[]>(DEFAULT_CROPS);
-  const [visits, setVisits] = useState<ShopVisitNote[]>(INITIAL_VISIT_NOTES);
-  const [batches, setBatches] = useState<StockBatch[]>(INITIAL_STOCK_BATCHES);
-  const [sales, setSales] = useState<SaleRecord[]>(INITIAL_SALES);
+  const [visits, setVisits] = useState<ShopVisitNote[]>([]);
+  const [batches, setBatches] = useState<StockBatch[]>([]);
+  const [sales, setSales] = useState<SaleRecord[]>([]);
   const [rateHistory, setRateHistory] = useState<MandiRateHistory[]>(INITIAL_PRICE_HISTORY);
+  const [rents, setRents] = useState<GodownRentRecord[]>([]);
 
   // Global Theme: 'dark' (Default), 'light' (Day), 'high-contrast' (Outdoor Mandi Glare)
   const [theme, setTheme] = useState<AppTheme>(() => {
@@ -173,21 +181,25 @@ export default function App() {
         await saveAllUserCrops(targetUid, DEFAULT_CROPS);
       }
 
-      // 3. Visits
+      // 3. Visits: Clean blank list for new users
       const userVisits = await fetchUserVisits(targetUid);
       setVisits(userVisits || []);
 
-      // 4. Batches
+      // 4. Batches: Clean blank list for new users
       const userBatches = await fetchUserBatches(targetUid);
       setBatches(userBatches || []);
 
-      // 5. Sales
+      // 5. Sales: Clean blank list
       const userSales = await fetchUserSales(targetUid);
       setSales(userSales || []);
 
       // 6. Rate History
       const userRates = await fetchUserRateHistory(targetUid);
       setRateHistory(userRates && userRates.length > 0 ? userRates : INITIAL_PRICE_HISTORY);
+
+      // 7. Godown Rents: Clean blank list for new users
+      const userRents = await fetchUserGodownRents(targetUid);
+      setRents(userRents || []);
     } catch (err) {
       console.error('Failed to load user data from Firestore:', err);
     }
@@ -218,7 +230,7 @@ export default function App() {
         }
         setUserProfile(profile);
 
-        // Load data for this user
+        // Load isolated data for this logged in user
         await loadUserData(user.uid);
 
         // Show workspace when logged in
@@ -228,18 +240,29 @@ export default function App() {
         setUserProfile(null);
         setViewingOtherUser(null);
 
-        // Load cached demo/guest data
+        // Load cached demo/guest data only if user was explicitly exploring demo mode
         try {
-          const savedCrops = localStorage.getItem('mandi_crops_v1');
-          if (savedCrops) setCrops(JSON.parse(savedCrops));
-          const savedVisits = localStorage.getItem('mandi_visits_v1');
-          if (savedVisits) setVisits(JSON.parse(savedVisits));
-          const savedBatches = localStorage.getItem('mandi_batches_v1');
-          if (savedBatches) setBatches(JSON.parse(savedBatches));
-          const savedSales = localStorage.getItem('mandi_sales_v1');
-          if (savedSales) setSales(JSON.parse(savedSales));
-          const savedRates = localStorage.getItem('mandi_history_v1');
-          if (savedRates) setRateHistory(JSON.parse(savedRates));
+          const inDemo = localStorage.getItem('mandi_in_demo_v1') === 'true';
+          if (inDemo) {
+            const savedCrops = localStorage.getItem('mandi_crops_v1');
+            if (savedCrops) setCrops(JSON.parse(savedCrops));
+            const savedVisits = localStorage.getItem('mandi_visits_v1');
+            if (savedVisits) setVisits(JSON.parse(savedVisits));
+            const savedBatches = localStorage.getItem('mandi_batches_v1');
+            if (savedBatches) setBatches(JSON.parse(savedBatches));
+            const savedSales = localStorage.getItem('mandi_sales_v1');
+            if (savedSales) setSales(JSON.parse(savedSales));
+            const savedRates = localStorage.getItem('mandi_history_v1');
+            if (savedRates) setRateHistory(JSON.parse(savedRates));
+            const savedRents = localStorage.getItem('mandi_rents_v1');
+            if (savedRents) setRents(JSON.parse(savedRents));
+          } else {
+            // Keep clean blank slate
+            setVisits([]);
+            setBatches([]);
+            setSales([]);
+            setRents([]);
+          }
         } catch (e) {
           console.error(e);
         }
@@ -422,6 +445,45 @@ export default function App() {
     }
   };
 
+  // Godown Sub-tab state (batches vs rent)
+  const [godamSubTab, setGodamSubTab] = useState<'batches' | 'rent'>('batches');
+
+  const handleNavigateGodownRent = () => {
+    setGodamSubTab('rent');
+    setActiveTab('godam');
+  };
+
+  // Godown Rent Actions
+  const handleSaveRent = async (rent: GodownRentRecord) => {
+    setRents((prev) => {
+      const exists = prev.some((r) => r.id === rent.id);
+      return exists ? prev.map((r) => (r.id === rent.id ? rent : r)) : [rent, ...prev];
+    });
+    if (effectiveUserId) {
+      await saveUserGodownRent(effectiveUserId, rent);
+    }
+  };
+
+  const handleDeleteRent = async (id: string) => {
+    if (window.confirm('کیا آپ واقعی یہ گودام کرایہ ریکارڈ حذف کرنا چاہتے ہیں؟')) {
+      setRents((prev) => prev.filter((r) => r.id !== id));
+      if (effectiveUserId) {
+        await deleteUserGodownRent(effectiveUserId, id);
+      }
+    }
+  };
+
+  // Single sample onboarding loader (only if requested by user)
+  const handleLoadSingleSample = () => {
+    setBatches((prev) => (prev.length > 0 ? prev : [SINGLE_SAMPLE_BATCH]));
+    setVisits((prev) => (prev.length > 0 ? prev : [SINGLE_SAMPLE_VISIT]));
+  };
+
+  const handleClearAllSamples = () => {
+    setBatches((prev) => prev.filter((b) => !b.isSample));
+    setVisits((prev) => prev.filter((v) => !v.isSample));
+  };
+
   // Reset to default sample mandi data
   const handleResetData = () => {
     if (window.confirm('کیا آپ تمام ڈیٹا اصلی نمونہ ریکارڈز پر ری سیٹ کرنا چاہتے ہیں؟')) {
@@ -430,6 +492,7 @@ export default function App() {
       setBatches(INITIAL_STOCK_BATCHES);
       setSales(INITIAL_SALES);
       setRateHistory(INITIAL_PRICE_HISTORY);
+      setRents(INITIAL_GODOWN_RENTS);
 
       if (effectiveUserId) {
         saveAllUserCrops(effectiveUserId, DEFAULT_CROPS);
@@ -440,6 +503,10 @@ export default function App() {
   const handleEnterDemo = () => {
     try {
       localStorage.setItem('mandi_in_demo_v1', 'true');
+      if (batches.length === 0) setBatches(INITIAL_STOCK_BATCHES);
+      if (visits.length === 0) setVisits(INITIAL_VISIT_NOTES);
+      if (sales.length === 0) setSales(INITIAL_SALES);
+      if (rents.length === 0) setRents(INITIAL_GODOWN_RENTS);
     } catch (e) {
       console.error(e);
     }
@@ -450,6 +517,10 @@ export default function App() {
     await logOutUser();
     try {
       localStorage.removeItem('mandi_in_demo_v1');
+      setBatches([]);
+      setVisits([]);
+      setSales([]);
+      setRents([]);
     } catch (e) {
       console.error(e);
     }
@@ -532,6 +603,10 @@ export default function App() {
               setSelectedCropId(cropId);
               setActiveTab('godam');
             }}
+            rents={rents}
+            onClearSamples={handleClearAllSamples}
+            onLoadSingleSample={handleLoadSingleSample}
+            onNavigateGodownRent={handleNavigateGodownRent}
           />
         )}
 
@@ -544,6 +619,7 @@ export default function App() {
             onEditVisit={handleEditVisit}
             onDeleteVisit={handleDeleteVisit}
             onConvertToBatch={handleConvertToBatch}
+            onLoadSingleSample={handleLoadSingleSample}
           />
         )}
 
@@ -557,6 +633,11 @@ export default function App() {
             onDeleteBatch={handleDeleteBatch}
             onRecordSale={handleRecordSale}
             sales={sales}
+            rents={rents}
+            onSaveRent={handleSaveRent}
+            onDeleteRent={handleDeleteRent}
+            initialSubTab={godamSubTab}
+            onLoadSingleSample={handleLoadSingleSample}
           />
         )}
 
@@ -761,7 +842,7 @@ export default function App() {
           }
           setIsSuperAdminModalOpen(false);
         }}
-        superAdminEmail={SUPER_ADMIN_EMAIL}
+        superAdminEmail={currentUser?.email || SUPER_ADMIN_EMAIL}
       />
     </div>
   );
