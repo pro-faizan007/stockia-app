@@ -183,11 +183,11 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 shadow-lg">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-xl sm:text-2xl font-black text-white">
               گودام سٹاک و ہولڈنگ (Warehouse Inventory)
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 whitespace-nowrap text-center inline-flex items-center justify-center shrink-0 leading-tight">
               Active Stock & Rent
             </span>
           </div>
@@ -251,7 +251,7 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
         <>
           {/* Sample Entry Guidance Banner (If a sample batch exists) */}
           {batches.some((b) => b.isSample) && (
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-purple-900/30 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4" />
@@ -668,14 +668,36 @@ export const GodamInventory: React.FC<GodamInventoryProps> = ({
                   </div>
 
                   {/* Dhalta and Landed Expense Breakdown */}
-                  <div className="mt-2.5 flex items-center justify-between text-[11px] text-slate-400 px-2 py-1 rounded bg-slate-900/40">
-                    <span className="flex items-center gap-1 text-purple-300">
-                      <Scale className="w-3 h-3" />
-                      ڈھلتا کٹوتی حاصل: <strong>{batch.dhaltaExtraDeductedKg} کلو</strong> مفت مال
-                    </span>
-                    <span>
-                      باردانہ: {formatPKR(batch.bardanaCostPkr)} • مزدوری: {formatPKR(batch.laborCostPkr)}
-                    </span>
+                  <div className="mt-2.5 p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1.5 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1 text-purple-300 font-semibold">
+                        <Scale className="w-3.5 h-3.5" />
+                        ڈھلتا کٹوتی حاصل: <strong>{batch.dhaltaExtraDeductedKg} کلو</strong> ({formatMunds(batch.dhaltaExtraDeductedKg / MUND_KG)} من)
+                      </span>
+                      <span className="text-amber-300 font-extrabold font-mono bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
+                        کل وزن لاٹ: {formatMunds(batch.physicalMunds || (batch.initialBags * batch.bagWeightKg) / MUND_KG)} مَن
+                      </span>
+                    </div>
+
+                    {/* Detailed Expenses (Kiraya, Commission, Broker Fee, Bardana, Labor) */}
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 flex-wrap gap-x-2.5 gap-y-1 pt-1 border-t border-slate-800">
+                      {(batch.kirayaCostPkr ?? 0) > 0 && (
+                        <span>کرایہ منڈی تا گودام: <strong className="text-emerald-300">{formatPKR(batch.kirayaCostPkr!)}</strong></span>
+                      )}
+                      {(batch.commissionPkr ?? 0) > 0 && (
+                        <span>کمیشن: <strong className="text-amber-300">{formatPKR(batch.commissionPkr!)}</strong></span>
+                      )}
+                      {(batch.brokerFeePkr ?? 0) > 0 && (
+                        <span>بروکر/دلالی: <strong className="text-purple-300">{formatPKR(batch.brokerFeePkr!)}</strong></span>
+                      )}
+                      {(batch.bardanaCostPkr ?? 0) > 0 && (
+                        <span>باردانہ: <strong className="text-slate-200">{formatPKR(batch.bardanaCostPkr!)}</strong></span>
+                      )}
+                      {(batch.laborCostPkr ?? 0) > 0 && (
+                        <span>مزدوری: <strong className="text-slate-200">{formatPKR(batch.laborCostPkr!)}</strong></span>
+                      )}
+                      <span>کل لاگت: <strong className="text-white">{formatPKR(batch.totalInvestedPkr)}</strong></span>
+                    </div>
                   </div>
 
                   {batch.notes && (

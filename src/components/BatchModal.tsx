@@ -74,6 +74,24 @@ export const BatchModal: React.FC<BatchModalProps> = ({
   const [laborCostPkr, setLaborCostPkr] = useState<number>(
     initialBatch?.laborCostPkr || 0
   );
+  // Kiraya from mandi to godam (کرایہ منڈی تا گودام)
+  const [kirayaCostPkr, setKirayaCostPkr] = useState<number>(
+    initialBatch?.kirayaCostPkr || 0
+  );
+  const [kirayaPerBag, setKirayaPerBag] = useState<string>('');
+
+  // Commission on maal (کمیشن برائے مال)
+  const [commissionPkr, setCommissionPkr] = useState<number>(
+    initialBatch?.commissionPkr || 0
+  );
+  const [commissionPercent, setCommissionPercent] = useState<string>('');
+
+  // Broker / Dalali fee on maal laat (بروکر / دلالی فیس برائے مال لاٹ)
+  const [brokerFeePkr, setBrokerFeePkr] = useState<number>(
+    initialBatch?.brokerFeePkr || 0
+  );
+  const [brokerFeePerBag, setBrokerFeePerBag] = useState<string>('');
+
   const [notes, setNotes] = useState<string>(
     initialBatch?.notes || fromVisitNote?.notes || ''
   );
@@ -86,9 +104,21 @@ export const BatchModal: React.FC<BatchModalProps> = ({
     deductionBaseKg,
     deductionKg: dhaltaKg,
     ratePerMund: purchaseRatePerMund,
+    bardanaPerBagPkr: 0,
+    laborPerBagPkr: 0,
+    kirayaTotalPkr: kirayaCostPkr,
+    commissionTotalPkr: commissionPkr,
+    brokerFeeTotalPkr: brokerFeePkr,
   });
 
-  const totalInvestedPkr = calc.rawGrainAmountPkr + Number(bardanaCostPkr || 0) + Number(laborCostPkr || 0);
+  const totalInvestedPkr =
+    calc.rawGrainAmountPkr +
+    Number(bardanaCostPkr || 0) +
+    Number(laborCostPkr || 0) +
+    Number(kirayaCostPkr || 0) +
+    Number(commissionPkr || 0) +
+    Number(brokerFeePkr || 0);
+
   const effectiveCostPerMund = calc.physicalMunds > 0 ? totalInvestedPkr / calc.physicalMunds : purchaseRatePerMund;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -118,6 +148,9 @@ export const BatchModal: React.FC<BatchModalProps> = ({
       totalBilledPurchasePkr: calc.rawGrainAmountPkr,
       bardanaCostPkr: Number(bardanaCostPkr) || 0,
       laborCostPkr: Number(laborCostPkr) || 0,
+      kirayaCostPkr: Number(kirayaCostPkr) || 0,
+      commissionPkr: Number(commissionPkr) || 0,
+      brokerFeePkr: Number(brokerFeePkr) || 0,
       totalInvestedPkr,
       effectiveCostPerMund: Math.round(effectiveCostPerMund),
       notes,
@@ -160,10 +193,10 @@ export const BatchModal: React.FC<BatchModalProps> = ({
                   setCropId(e.target.value);
                   const c = crops.find((x) => x.id === e.target.value);
                   if (c) {
-                    setBagWeightKg(c.defaultBoriWeightKg);
-                    setMundWeightKg(c.defaultMundWeightKg);
-                    setDeductionBaseKg(c.deductionBaseKg);
-                    setDhaltaKg(c.deductionKg);
+                    // Do not overwrite bagWeightKg - user selects crop independently
+                    setMundWeightKg(c.defaultMundWeightKg || 40);
+                    setDeductionBaseKg(c.deductionBaseKg || 50);
+                    setDhaltaKg(c.deductionKg ?? 1.0);
                     setPurchaseRatePerMund(c.currentMarketRatePerMund);
                   }
                 }}
@@ -255,7 +288,12 @@ export const BatchModal: React.FC<BatchModalProps> = ({
                 type="number"
                 min="1"
                 value={initialBags}
-                onChange={(e) => setInitialBags(Number(e.target.value))}
+                onChange={(e) => {
+                  const b = Number(e.target.value);
+                  setInitialBags(b);
+                  if (kirayaPerBag) setKirayaCostPkr(b * Number(kirayaPerBag));
+                  if (brokerFeePerBag) setBrokerFeePkr(b * Number(brokerFeePerBag));
+                }}
                 required
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono"
               />
@@ -264,10 +302,10 @@ export const BatchModal: React.FC<BatchModalProps> = ({
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="text-slate-300 font-semibold text-xs">بوری وزن (Kg) *</label>
-                <span className="text-[10px] text-amber-400 font-bold">40 / 60 / 70 کلو</span>
+                <span className="text-[10px] text-amber-400 font-bold">50 / 60 / 70 کلو</span>
               </div>
               <div className="grid grid-cols-3 gap-1 mb-1.5">
-                {[40, 60, 70].map((w) => (
+                {[50, 60, 70].map((w) => (
                   <button
                     key={w}
                     type="button"
@@ -287,9 +325,10 @@ export const BatchModal: React.FC<BatchModalProps> = ({
                 onChange={(e) => setBagWeightKg(Number(e.target.value))}
                 className="w-full px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono text-xs"
               >
-                <option value={40}>40 کلو (1 من بوری - گندم و سرسوں)</option>
-                <option value={60}>60 کلو (60 کلو بوری - مکئی)</option>
-                <option value={70}>70 کلو (70 کلو بوری - چاول و دھان)</option>
+                <option value={50}>50 کلو (50 kg)</option>
+                <option value={60}>60 کلو (60 kg)</option>
+                <option value={70}>70 کلو (70 kg)</option>
+                <option value={40}>40 کلو (40 kg)</option>
               </select>
             </div>
 
@@ -299,7 +338,14 @@ export const BatchModal: React.FC<BatchModalProps> = ({
                 type="number"
                 min="0"
                 value={purchaseRatePerMund}
-                onChange={(e) => setPurchaseRatePerMund(Number(e.target.value))}
+                onChange={(e) => {
+                  const r = Number(e.target.value);
+                  setPurchaseRatePerMund(r);
+                  if (commissionPercent) {
+                    const estRaw = calc.netBilledMunds * r;
+                    setCommissionPkr(Math.round((estRaw * Number(commissionPercent)) / 100));
+                  }
+                }}
                 required
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-amber-400 font-bold font-mono"
               />
@@ -317,56 +363,248 @@ export const BatchModal: React.FC<BatchModalProps> = ({
             </div>
           </div>
 
-          {/* Landed Expenses (Bardana & Labor) */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-slate-300 font-semibold block mb-1">
-                کل باردانہ لاگت (Total Bardana PKR)
-              </label>
-              <input
-                type="number"
-                min="0"
-                placeholder="0"
-                value={bardanaCostPkr || ''}
-                onChange={(e) => setBardanaCostPkr(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono"
-              />
+          {/* Prominent Total Mand Weight (کل وزن مَن) Highlight */}
+          <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-slate-950 to-amber-500/10 border border-amber-500/40 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400 shrink-0">
+                <Scale className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-[11px] text-amber-400 block font-bold">
+                  کل وزن مَن (Total Mand Weight)
+                </span>
+                <span className="text-base sm:text-lg font-black text-amber-400 font-mono">
+                  {calc.physicalMunds.toFixed(2)} مَن{' '}
+                  <span className="text-xs text-slate-300 font-medium">
+                    ({calc.grossWeightKg.toLocaleString()} کلو کچا)
+                  </span>
+                </span>
+              </div>
             </div>
 
-            <div>
-              <label className="text-slate-300 font-semibold block mb-1">
-                کل پلے داری و مزدوری (Total Labor PKR)
-              </label>
-              <input
-                type="number"
-                min="0"
-                placeholder="0"
-                value={laborCostPkr || ''}
-                onChange={(e) => setLaborCostPkr(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono"
-              />
+            <div className="flex items-center gap-4 text-[11px] bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700">
+              <div>
+                <span className="text-slate-400 block text-[10px]">کچا کل وزن:</span>
+                <span className="font-bold text-white font-mono">
+                  {calc.grossMunds.toFixed(2)} من
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">ڈھلتا کٹوتی:</span>
+                <span className="font-bold text-purple-400 font-mono">
+                  -{calc.totalDhaltaExtraMunds.toFixed(2)} من
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">خالص بل شدہ:</span>
+                <span className="font-bold text-emerald-400 font-mono">
+                  {calc.netBilledMunds.toFixed(2)} من
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Mandi to Godam Kiraya, Commission, Broker Fee & Expenses */}
+          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="font-bold text-white text-xs flex items-center gap-1.5">
+                <DollarSign className="w-4 h-4 text-emerald-400" />
+                <span>منڈی تا گودام کرایہ و اخراجات لاٹ (Carriage & Expenses)</span>
+              </span>
+              <span className="text-[10px] text-slate-400">
+                کرایہ، کمیشن، اور بروکر فیس
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* 1. Kiraya from Mandi to Godam */}
+              <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-700 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-slate-200 font-semibold text-[11px] block">
+                    کرایہ منڈی تا گودام (Kiraya)
+                  </label>
+                  <span className="text-[10px] text-amber-400 font-mono">PKR</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block mb-0.5">فی بوری</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={kirayaPerBag}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setKirayaPerBag(val);
+                        setKirayaCostPkr(Number(val) * initialBags);
+                      }}
+                      className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-white font-mono text-xs"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block mb-0.5">کل کرایہ</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={kirayaCostPkr || ''}
+                      onChange={(e) => {
+                        const v = Number(e.target.value);
+                        setKirayaCostPkr(v);
+                        if (initialBags > 0) setKirayaPerBag((v / initialBags).toFixed(1));
+                      }}
+                      className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-emerald-400 font-bold font-mono text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Commission on Maal */}
+              <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-700 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-slate-200 font-semibold text-[11px] block">
+                    کمیشن برائے مال (Commission)
+                  </label>
+                  <span className="text-[10px] text-amber-400 font-mono">% یا PKR</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block mb-0.5">کمیشن %</span>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      placeholder="e.g. 1%"
+                      value={commissionPercent}
+                      onChange={(e) => {
+                        const p = e.target.value;
+                        setCommissionPercent(p);
+                        setCommissionPkr(Math.round((calc.rawGrainAmountPkr * Number(p)) / 100));
+                      }}
+                      className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-white font-mono text-xs"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block mb-0.5">کل کمیشن</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={commissionPkr || ''}
+                      onChange={(e) => {
+                        setCommissionPkr(Number(e.target.value));
+                        setCommissionPercent('');
+                      }}
+                      className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-amber-400 font-bold font-mono text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Broker Fee on Maal Laat */}
+              <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-700 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-slate-200 font-semibold text-[11px] block">
+                    بروکر فیس برائے لاٹ (Broker Fee)
+                  </label>
+                  <span className="text-[10px] text-amber-400 font-mono">دلالی</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block mb-0.5">فی بوری</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={brokerFeePerBag}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setBrokerFeePerBag(val);
+                        setBrokerFeePkr(Number(val) * initialBags);
+                      }}
+                      className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-white font-mono text-xs"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block mb-0.5">کل دلالی</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={brokerFeePkr || ''}
+                      onChange={(e) => {
+                        const v = Number(e.target.value);
+                        setBrokerFeePkr(v);
+                        if (initialBags > 0) setBrokerFeePerBag((v / initialBags).toFixed(1));
+                      }}
+                      className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-purple-400 font-bold font-mono text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bardana and Labor */}
+            <div className="grid grid-cols-2 gap-3 pt-1 border-t border-slate-800">
+              <div>
+                <label className="text-slate-400 block mb-1 text-[11px]">
+                  کل باردانہ لاگت (Bardana PKR)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={bardanaCostPkr || ''}
+                  onChange={(e) => setBardanaCostPkr(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white font-mono text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-400 block mb-1 text-[11px]">
+                  کل پلے داری و مزدوری (Labor PKR)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={laborCostPkr || ''}
+                  onChange={(e) => setLaborCostPkr(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white font-mono text-xs"
+                />
+              </div>
             </div>
           </div>
 
           {/* Live Landed Math Preview */}
-          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 grid grid-cols-3 gap-2 text-xs">
+          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
             <div>
-              <span className="text-slate-400 block">گودام فزیکل وزن:</span>
-              <span className="font-black text-white">
-                {calc.physicalMunds.toFixed(2)} من ({initialBags} بوری)
+              <span className="text-slate-400 block text-[10px]">گودام فزیکل وزن:</span>
+              <span className="font-black text-white text-xs sm:text-sm font-mono">
+                {calc.physicalMunds.toFixed(2)} مَن
               </span>
+              <span className="text-[10px] text-slate-400 block">({initialBags} بوری)</span>
             </div>
             <div>
-              <span className="text-slate-400 block">بل شدہ اناج رقم:</span>
-              <span className="font-black text-amber-400">
+              <span className="text-slate-400 block text-[10px]">بل اناج رقم:</span>
+              <span className="font-black text-amber-400 text-xs sm:text-sm font-mono">
                 {formatPKR(calc.rawGrainAmountPkr)}
               </span>
+              <span className="text-[10px] text-slate-400 block">({calc.netBilledMunds.toFixed(2)} بل من)</span>
             </div>
             <div>
-              <span className="text-slate-400 block">کل لاگت فی من (Landed):</span>
-              <span className="font-black text-emerald-400">
+              <span className="text-slate-400 block text-[10px]">کل لینڈڈ سرمایہ:</span>
+              <span className="font-black text-blue-400 text-xs sm:text-sm font-mono">
+                {formatPKR(totalInvestedPkr)}
+              </span>
+              <span className="text-[10px] text-slate-400 block">اناج + کرایہ + جملہ اخراجات</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px]">کل لاگت فی من (Landed):</span>
+              <span className="font-black text-emerald-400 text-xs sm:text-sm font-mono">
                 {formatPKR(effectiveCostPerMund)} /من
               </span>
+              <span className="text-[10px] text-emerald-300 block font-semibold">گودام فائنل لاگت</span>
             </div>
           </div>
 

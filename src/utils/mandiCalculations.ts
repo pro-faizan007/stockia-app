@@ -8,7 +8,7 @@ export const MUND_KG = 40; // Alias for backward compatibility
 
 export interface MandiCalculationInput {
   bags: number;
-  bagWeightKg?: number; // e.g. 40, 50, 100
+  bagWeightKg?: number; // e.g. 50, 60, 70
   mundWeightKg?: number; // e.g. 40 or 50
   deductionBaseKg?: number; // e.g. 50 or 100
   deductionKg?: number; // e.g. 1.0 or 2.0
@@ -16,6 +16,12 @@ export interface MandiCalculationInput {
   dhaltaPer50Kg?: number; // backward-compatibility fallback
   bardanaPerBagPkr?: number; // bag packing cost
   laborPerBagPkr?: number; // palladari / loading / unloading per bag
+  kirayaPerBagPkr?: number; // carriage / transport from mandi to godam per bag (کرایہ فی بوری)
+  kirayaTotalPkr?: number; // total kiraya from mandi to godam (کل کرایہ منڈی تا گودام)
+  commissionPercent?: number; // commission percentage on grain (کمیشن فیصد)
+  commissionTotalPkr?: number; // total commission on maal in PKR (کل کمیشن برائے مال)
+  brokerFeePerBagPkr?: number; // broker / dalali fee per bag (بروکر فیس فی بوری)
+  brokerFeeTotalPkr?: number; // total broker / dalali fee on lot in PKR (کل بروکر فیس)
 }
 
 export interface MandiCalculationResult {
@@ -42,6 +48,9 @@ export interface MandiCalculationResult {
   rawGrainAmountPkr: number; // netBilledMunds * ratePerMund
   bardanaTotalPkr: number;
   laborTotalPkr: number;
+  kirayaTotalPkr: number; // Total kiraya from mandi to godam (کرایہ منڈی تا گودام)
+  commissionTotalPkr: number; // Total commission on maal (کمیشن برائے مال)
+  brokerFeeTotalPkr: number; // Total broker / dalali fee (بروکر / دلالی فیس)
   totalPayablePkr: number;
   effectiveCostPerPhysicalMund: number;
   dhaltaBenefitPkr: number; // Value of extra grain acquired for free
@@ -57,6 +66,12 @@ export function calculateMandiLot(input: MandiCalculationInput): MandiCalculatio
     ratePerMund = 0,
     bardanaPerBagPkr = 0,
     laborPerBagPkr = 0,
+    kirayaPerBagPkr = 0,
+    kirayaTotalPkr,
+    commissionPercent = 0,
+    commissionTotalPkr,
+    brokerFeePerBagPkr = 0,
+    brokerFeeTotalPkr,
   } = input;
 
   const validBags = Math.max(0, Number(bags) || 0);
@@ -88,7 +103,32 @@ export function calculateMandiLot(input: MandiCalculationInput): MandiCalculatio
 
   const bardanaTotalPkr = validBags * (Number(bardanaPerBagPkr) || 0);
   const laborTotalPkr = validBags * (Number(laborPerBagPkr) || 0);
-  const totalPayablePkr = rawGrainAmountPkr + bardanaTotalPkr + laborTotalPkr;
+
+  // Kiraya from mandi to godam:
+  const resolvedKirayaTotalPkr =
+    kirayaTotalPkr !== undefined && kirayaTotalPkr > 0
+      ? Number(kirayaTotalPkr)
+      : validBags * (Number(kirayaPerBagPkr) || 0);
+
+  // Commission on maal:
+  const resolvedCommissionTotalPkr =
+    commissionTotalPkr !== undefined && commissionTotalPkr > 0
+      ? Number(commissionTotalPkr)
+      : (rawGrainAmountPkr * (Number(commissionPercent) || 0)) / 100;
+
+  // Broker / dalali fee on maal laat:
+  const resolvedBrokerFeeTotalPkr =
+    brokerFeeTotalPkr !== undefined && brokerFeeTotalPkr > 0
+      ? Number(brokerFeeTotalPkr)
+      : validBags * (Number(brokerFeePerBagPkr) || 0);
+
+  const totalPayablePkr =
+    rawGrainAmountPkr +
+    bardanaTotalPkr +
+    laborTotalPkr +
+    resolvedKirayaTotalPkr +
+    resolvedCommissionTotalPkr +
+    resolvedBrokerFeeTotalPkr;
 
   const effectiveCostPerPhysicalMund =
     physicalMunds > 0 ? totalPayablePkr / physicalMunds : validRatePerMund;
@@ -117,7 +157,10 @@ export function calculateMandiLot(input: MandiCalculationInput): MandiCalculatio
     rawGrainAmountPkr,
     bardanaTotalPkr,
     laborTotalPkr,
-    totalPayablePkr,
+    kirayaTotalPkr: Math.round(resolvedKirayaTotalPkr),
+    commissionTotalPkr: Math.round(resolvedCommissionTotalPkr),
+    brokerFeeTotalPkr: Math.round(resolvedBrokerFeeTotalPkr),
+    totalPayablePkr: Math.round(totalPayablePkr),
     effectiveCostPerPhysicalMund,
     dhaltaBenefitPkr,
   };

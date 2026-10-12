@@ -304,11 +304,11 @@ export const CropSeasonSettings: React.FC<CropSeasonSettingsProps> = ({
                   {/* 2. Default Bori Weight */}
                   <div>
                     <label className="text-slate-300 font-medium flex items-center justify-between mb-1">
-                      <span>بوری کا وزن (40 / 60 / 70 کلو)</span>
+                      <span>بوری کا وزن (50 / 60 / 70 کلو)</span>
                       <span className="text-[10px] text-slate-400 font-mono" dir="ltr">Bag (kg)</span>
                     </label>
                     <div className="flex items-center gap-1 mb-1.5">
-                      {[40, 60, 70].map((w) => (
+                      {[50, 60, 70].map((w) => (
                         <button
                           key={w}
                           type="button"

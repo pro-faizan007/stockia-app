@@ -168,7 +168,7 @@ ${visit.qualityDescription ? `🔍 *کیفیت:* ${visit.qualityDescription}\n` 
 
       {/* Sample Entry Guidance Banner (If a sample visit note exists) */}
       {visits.some((v) => v.isSample) && (
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-purple-900/30 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
               <Sparkles className="w-4 h-4" />

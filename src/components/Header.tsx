@@ -82,34 +82,34 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* Top Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-13 sm:h-16 gap-1.5 sm:gap-2">
           {/* Logo & Identity */}
-          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
             <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-md shadow-amber-500/20 ring-1 ring-amber-400/30 shrink-0">
               <Wheat className="w-4 h-4 sm:w-6 sm:h-6 text-slate-950 font-bold" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1 sm:gap-2">
-                <span className="font-black text-sm sm:text-xl tracking-tight text-white whitespace-nowrap">
+                <span className="font-black text-xs sm:text-xl tracking-tight text-white whitespace-nowrap">
                   Mandi<span className="text-amber-400">Stockia</span>
                 </span>
-                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0 hidden sm:inline-block">
+                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0 hidden md:inline-block">
                   PKR / من
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate hidden md:block">
+              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate hidden lg:block">
                 غلہ منڈی سٹاک، آڑھتی وزٹ و ڈھلتا حساب کتاب ایپ (پاکستان)
               </p>
             </div>
           </div>
 
-          {/* Quick Action Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Quick Action Buttons (Optimized for small mobile viewports) */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Promotional Landing Page Showcase Button */}
             <button
               onClick={onShowLandingPage}
-              className="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-2 text-xs font-semibold rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-amber-300 border border-slate-700/80 transition-all cursor-pointer"
+              className="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-2 text-xs font-semibold rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-amber-300 border border-slate-700/80 transition-all cursor-pointer shrink-0"
               title="سافٹ ویئر کا تعارفی و پروموشنل صفحہ دیکھیں"
             >
               <ExternalLink className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -120,7 +120,7 @@ export const Header: React.FC<HeaderProps> = ({
             {isSuperAdmin && (
               <button
                 onClick={onOpenSuperAdmin}
-                className="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-2 text-xs font-bold rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-2 text-xs font-bold rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 transition-all cursor-pointer shadow-sm shrink-0"
                 title="سپر ایڈمن پینل - تمام صارفین کا ڈیٹا ملاحظہ کریں"
               >
                 <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -131,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Global Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className={`flex items-center justify-center p-1.5 sm:px-2.5 sm:py-2 text-xs font-bold rounded-lg transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap border ${
+              className={`flex items-center justify-center p-1.5 sm:px-2.5 sm:py-2 text-xs font-bold rounded-lg transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap border shrink-0 ${
                 theme === 'dark'
                   ? 'bg-slate-800/90 hover:bg-slate-700 text-amber-300 border-slate-700/80 hover:border-amber-400/50'
                   : theme === 'high-contrast'
@@ -170,28 +170,26 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Shop Visit Note Button */}
             <button
               onClick={onOpenNewVisit}
-              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-1.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap shrink-0"
               title="Record shop visit note"
             >
               <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="sm:hidden">وزٹ</span>
-              <span className="hidden sm:inline">دکان وزٹ</span>
+              <span className="hidden xs:inline">دکان وزٹ</span>
             </button>
 
             {/* Warehouse Stock Batch Button */}
             <button
               onClick={onOpenNewBatch}
-              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-1.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm cursor-pointer active:scale-95 whitespace-nowrap shrink-0"
               title="Record bought lot into warehouse"
             >
               <PackagePlus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="sm:hidden">خرید</span>
-              <span className="hidden sm:inline">خرید مال</span>
+              <span className="hidden xs:inline">خرید مال</span>
             </button>
 
             {/* Auth / Profile Button */}
             {currentUser ? (
-              <div className="flex items-center gap-1 pl-1">
+              <div className="flex items-center gap-1 shrink-0">
                 <div
                   className="hidden md:flex flex-col text-right px-2 py-1 rounded-lg bg-slate-800/60 border border-slate-700/60"
                   title={currentUser.email}
@@ -205,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
                 <button
                   onClick={onLogout}
-                  className="p-1.5 sm:px-2 sm:py-2 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700/80 transition-colors"
+                  className="p-1.5 sm:px-2 sm:py-2 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700/80 transition-colors shrink-0"
                   title="لاگ آؤٹ کریں"
                 >
                   <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -214,9 +212,9 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 transition-all shadow-sm"
+                className="flex items-center gap-1 px-2 py-1.5 sm:px-3 sm:py-2 text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 transition-all shadow-sm shrink-0 whitespace-nowrap cursor-pointer"
               >
-                <LogIn className="w-3.5 h-3.5" />
+                <LogIn className="w-3.5 h-3.5 shrink-0" />
                 <span>لاگ ان</span>
               </button>
             )}

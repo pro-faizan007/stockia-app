@@ -27,7 +27,7 @@ export const MandiCalculator: React.FC<MandiCalculatorProps> = ({ crops, selecte
 
   // Inputs
   const [bags, setBags] = useState<number>(100);
-  const [bagWeightKg, setBagWeightKg] = useState<number>(activeCrop.defaultBoriWeightKg || 40);
+  const [bagWeightKg, setBagWeightKg] = useState<number>(50);
   const [mundWeightKg, setMundWeightKg] = useState<number>(activeCrop.defaultMundWeightKg || 40);
   const [deductionBaseKg, setDeductionBaseKg] = useState<number>(activeCrop.deductionBaseKg || 50);
   const [deductionKg, setDeductionKg] = useState<number>(activeCrop.deductionKg ?? 1.0);
@@ -35,15 +35,22 @@ export const MandiCalculator: React.FC<MandiCalculatorProps> = ({ crops, selecte
   const [bardanaPerBag, setBardanaPerBag] = useState<number>(0);
   const [laborPerBag, setLaborPerBag] = useState<number>(0);
 
+  // Mandi to Godam Kiraya, Commission, Broker Fee
+  const [kirayaPerBag, setKirayaPerBag] = useState<number>(0);
+  const [kirayaTotal, setKirayaTotal] = useState<number>(0);
+  const [commissionPercent, setCommissionPercent] = useState<number>(0);
+  const [commissionTotal, setCommissionTotal] = useState<number>(0);
+  const [brokerFeePerBag, setBrokerFeePerBag] = useState<number>(0);
+  const [brokerFeeTotal, setBrokerFeeTotal] = useState<number>(0);
+
   // Godown Rent & Kiraya Multi-Cycle Calculator State
   const [rentAmount, setRentAmount] = useState<number>(35000);
   const [rentFrequency, setRentFrequency] = useState<RentFrequency>('monthly');
   const [rentBags, setRentBags] = useState<number>(1000);
   const [copiedRentSlip, setCopiedRentSlip] = useState(false);
 
-  // Quick switch crop preset
+  // Quick switch crop preset (Does NOT force change bori weight - user selects crop independently)
   const handleSelectCropPreset = (crop: CropConfig) => {
-    setBagWeightKg(crop.defaultBoriWeightKg || 40);
     setMundWeightKg(crop.defaultMundWeightKg || 40);
     setDeductionBaseKg(crop.deductionBaseKg || 50);
     setDeductionKg(crop.deductionKg ?? 1.0);
@@ -60,6 +67,12 @@ export const MandiCalculator: React.FC<MandiCalculatorProps> = ({ crops, selecte
     ratePerMund,
     bardanaPerBagPkr: bardanaPerBag,
     laborPerBagPkr: laborPerBag,
+    kirayaPerBagPkr: kirayaPerBag,
+    kirayaTotalPkr: kirayaTotal,
+    commissionPercent,
+    commissionTotalPkr: commissionTotal,
+    brokerFeePerBagPkr: brokerFeePerBag,
+    brokerFeeTotalPkr: brokerFeeTotal,
   });
 
   // Copy result slip
@@ -68,16 +81,16 @@ export const MandiCalculator: React.FC<MandiCalculatorProps> = ({ crops, selecte
     const text = `🧮 *منڈی کاؤنٹر پرچی (Mandi Counter Calculation)*
 -----------------------------------
 🌾 *تعداد بوری:* ${bags} بوری (${bagWeightKg} کلو فی بوری)
-⚖️ *کل کچا وزن (Gross):* ${result.grossWeightKg.toLocaleString()} کلو (${formatMunds(result.grossMunds)} من)
+⚖️ *کل وزن مَن (Total Mand Weight):* ${formatMunds(result.physicalMunds)} من (${result.grossWeightKg.toLocaleString()} کلو کچا)
 ✂️ *ڈھلتا کٹوتی:* ${deductionKg} کلو فی ${deductionBaseKg} کلو (کل کٹوتی: ${result.totalDhaltaExtraKg.toFixed(1)} کلو / ${formatMunds(result.totalDhaltaExtraMunds)} من)
 📦 *بل والا خالص وزن (Net Billed):* ${result.netBilledWeightKg.toLocaleString()} کلو (${formatMunds(result.netBilledMunds)} من)
 💰 *ریٹ فی من (40kg):* ₨ ${ratePerMund.toLocaleString()}
 🎒 *ریٹ فی بوری:* ₨ ${Math.round(result.ratePerBori).toLocaleString()}
 -----------------------------------
 💵 *خام اناج کی رقم:* ₨ ${Math.round(result.rawGrainAmountPkr).toLocaleString()}
-${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotalPkr).toLocaleString()}\n` : ''}${laborPerBag > 0 ? `👷 پلے داری و مزدوری: ₨ ${Math.round(result.laborTotalPkr).toLocaleString()}\n` : ''}✅ *کل قابل ادائیگی رقم:* ₨ ${Math.round(result.totalPayablePkr).toLocaleString()}
+${result.kirayaTotalPkr > 0 ? `🚛 *کرایہ منڈی تا گودام:* ₨ ${Math.round(result.kirayaTotalPkr).toLocaleString()}\n` : ''}${result.commissionTotalPkr > 0 ? `🤝 *کمیشن برائے مال:* ₨ ${Math.round(result.commissionTotalPkr).toLocaleString()}\n` : ''}${result.brokerFeeTotalPkr > 0 ? `🧑‍💼 *بروکر / دلالی فیس:* ₨ ${Math.round(result.brokerFeeTotalPkr).toLocaleString()}\n` : ''}${bardanaPerBag > 0 ? `📦 *باردانہ:* ₨ ${Math.round(result.bardanaTotalPkr).toLocaleString()}\n` : ''}${laborPerBag > 0 ? `👷 *پلے داری و مزدوری:* ₨ ${Math.round(result.laborTotalPkr).toLocaleString()}\n` : ''}✅ *کل قابل ادائیگی رقم (Total Bill):* ₨ ${Math.round(result.totalPayablePkr).toLocaleString()}
 🎁 *ڈھلتا کی مفت مالیت:* ₨ ${Math.round(result.dhaltaBenefitPkr).toLocaleString()}
-🎯 *لاگت فی من (گودام مال پر):* ₨ ${Math.round(result.effectiveCostPerPhysicalMund).toLocaleString()}`;
+🎯 *لاگت فی من (گودام مال پر Landed):* ₨ ${Math.round(result.effectiveCostPerPhysicalMund).toLocaleString()}`;
 
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -179,51 +192,30 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               />
             </div>
 
-            {/* 2. Bag Weight Preset (40kg vs 60kg vs 70kg only) */}
+            {/* 2. Bag Weight Preset (50kg, 60kg, 70kg only - without crop names) */}
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="text-xs font-semibold text-slate-300">
-                  فی بوری وزن (Bag Weight in Kg)
+                  فی بوری وزن (Bag Weight in Kg) *
                 </label>
-                <span className="text-[11px] text-amber-400 font-bold">40 / 60 / 70 کلو معیاری سائز</span>
+                <span className="text-[11px] text-amber-400 font-bold">50 / 60 / 70 کلو وزن</span>
               </div>
               <div className="grid grid-cols-3 gap-2 mb-2">
-                <button
-                  type="button"
-                  onClick={() => setBagWeightKg(40)}
-                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
-                    bagWeightKg === 40
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
-                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="block text-sm font-mono font-black">40 kg</span>
-                  <span className="block text-[10px] opacity-85">1 من بوری (گندم/سرسوں)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBagWeightKg(60)}
-                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
-                    bagWeightKg === 60
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
-                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="block text-sm font-mono font-black">60 kg</span>
-                  <span className="block text-[10px] opacity-85">60 کلو بوری (مکئی)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBagWeightKg(70)}
-                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
-                    bagWeightKg === 70
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
-                      : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="block text-sm font-mono font-black">70 kg</span>
-                  <span className="block text-[10px] opacity-85">70 کلو بوری (چاول/دھان)</span>
-                </button>
+                {[50, 60, 70].map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => setBagWeightKg(w)}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer border text-center ${
+                      bagWeightKg === w
+                        ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
+                        : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800'
+                    }`}
+                  >
+                    <span className="block text-sm font-mono font-black">{w} kg</span>
+                    <span className="block text-[10px] opacity-85">{w} کلو بوری</span>
+                  </button>
+                ))}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-400 whitespace-nowrap">یا کسٹم وزن:</span>
@@ -302,33 +294,159 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               </div>
             </div>
 
-            {/* 5. Additional Optional Costs (Bardana & Labor) */}
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <div>
-                <label className="text-xs text-slate-400 block mb-1">
-                  باردانہ فی بوری (PKR / Bag)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={bardanaPerBag || ''}
-                  onChange={(e) => setBardanaPerBag(Number(e.target.value))}
-                  className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
-                />
+            {/* 5. Kiraya, Commission, Broker Fee & Mandi Expenses */}
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-700/80 space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <DollarSign className="w-4 h-4 text-amber-400" />
+                  <span>منڈی تا گودام کرایہ، کمیشن و بروکر فیس</span>
+                </span>
+                <span className="text-[10px] text-slate-400">لاگت میں شامل کریں</span>
               </div>
-              <div>
-                <label className="text-xs text-slate-400 block mb-1">
-                  پلے داری و مزدوری (PKR / Bag)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={laborPerBag || ''}
-                  onChange={(e) => setLaborPerBag(Number(e.target.value))}
-                  className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
-                />
+
+              {/* Kiraya from Mandi to Godam */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-slate-300 block mb-1">
+                    کرایہ منڈی تا گودام (فی بوری)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={kirayaPerBag || ''}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setKirayaPerBag(v);
+                      setKirayaTotal(v * bags);
+                    }}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-750 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-slate-300 block mb-1">
+                    کل کرایہ (Total Kiraya PKR)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={kirayaTotal || ''}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setKirayaTotal(v);
+                      if (bags > 0) setKirayaPerBag(Math.round(v / bags));
+                    }}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-emerald-400 font-bold font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* Commission on Maal */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-slate-300 block mb-1">
+                    کمیشن برائے مال (Commission %)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    placeholder="مثلاً 1%"
+                    value={commissionPercent || ''}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setCommissionPercent(v);
+                      setCommissionTotal(Math.round((result.rawGrainAmountPkr * v) / 100));
+                    }}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-slate-300 block mb-1">
+                    کل کمیشن (Total Commission PKR)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={commissionTotal || ''}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setCommissionTotal(v);
+                      setCommissionPercent(0);
+                    }}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-amber-400 font-bold font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* Broker Fee on Maal Laat */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-slate-300 block mb-1">
+                    بروکر فیس برائے لاٹ (فی بوری)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={brokerFeePerBag || ''}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setBrokerFeePerBag(v);
+                      setBrokerFeeTotal(v * bags);
+                    }}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-slate-300 block mb-1">
+                    کل بروکر فیس (Broker Fee PKR)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={brokerFeeTotal || ''}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setBrokerFeeTotal(v);
+                      if (bags > 0) setBrokerFeePerBag(Math.round(v / bags));
+                    }}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-purple-400 font-bold font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* Bardana and Labor */}
+              <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+                <div>
+                  <label className="text-[10px] text-slate-400 block mb-0.5">
+                    باردانہ فی بوری (PKR / Bag)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={bardanaPerBag || ''}
+                    onChange={(e) => setBardanaPerBag(Number(e.target.value))}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-400 block mb-0.5">
+                    پلے داری و مزدوری (PKR / Bag)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={laborPerBag || ''}
+                    onChange={(e) => setLaborPerBag(Number(e.target.value))}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -351,6 +469,25 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               </span>
             </div>
 
+            {/* Prominent Total Mand Weight Badge */}
+            <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-slate-900 to-amber-500/10 border border-amber-500/40 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-amber-400 flex items-center gap-1.5">
+                  <Scale className="w-4 h-4 text-amber-400" />
+                  <span>کل وزن مَن (Total Mand Weight)</span>
+                </span>
+                <span className="font-mono text-sm px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-black">
+                  {formatMunds(result.physicalMunds)} مَن
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-300 flex justify-between pt-1 border-t border-amber-500/20">
+                <span>گودام فزیکل کچا وزن:</span>
+                <span className="font-mono font-bold text-white">
+                  {formatMunds(result.physicalMunds)} من ({result.grossWeightKg.toLocaleString()} کلو)
+                </span>
+              </div>
+            </div>
+
             {/* Weights Breakdown */}
             <div className="space-y-2 text-xs">
               <div className="flex justify-between items-center text-slate-300">
@@ -360,7 +497,7 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
                 </span>
               </div>
 
-              <div className="flex justify-between items-center text-purple-300 bg-purple-950/30 p-2 rounded-lg border border-purple-900/40">
+              <div className="flex justify-between items-center text-purple-400 bg-purple-950/30 p-2 rounded-lg border border-purple-900/40">
                 <span className="flex items-center gap-1">
                   <Scale className="w-3.5 h-3.5" />
                   ڈھلتا کٹوتی ({result.dhaltaExtraKgPerBag.toFixed(2)}kg فی بوری):
@@ -370,7 +507,7 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
                 </span>
               </div>
 
-              <div className="flex justify-between items-center text-amber-300 bg-amber-500/10 p-2 rounded-lg border border-amber-500/30">
+              <div className="flex justify-between items-center text-amber-400 bg-amber-500/10 p-2 rounded-lg border border-amber-500/30">
                 <span className="font-bold">بل والا خالص وزن (Net Billable):</span>
                 <span className="font-mono font-extrabold text-white text-sm">
                   {result.netBilledWeightKg.toLocaleString()} کلو ({formatMunds(result.netBilledMunds)} من)
@@ -402,6 +539,33 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
                   {formatPKR(result.rawGrainAmountPkr)}
                 </span>
               </div>
+
+              {result.kirayaTotalPkr > 0 && (
+                <div className="flex justify-between text-emerald-400 font-medium">
+                  <span>کرایہ منڈی تا گودام ({bags} بوری):</span>
+                  <span className="font-mono font-bold">
+                    +{formatPKR(result.kirayaTotalPkr)}
+                  </span>
+                </div>
+              )}
+
+              {result.commissionTotalPkr > 0 && (
+                <div className="flex justify-between text-amber-400 font-medium">
+                  <span>کمیشن برائے مال:</span>
+                  <span className="font-mono font-bold">
+                    +{formatPKR(result.commissionTotalPkr)}
+                  </span>
+                </div>
+              )}
+
+              {result.brokerFeeTotalPkr > 0 && (
+                <div className="flex justify-between text-purple-400 font-medium">
+                  <span>بروکر / دلالی فیس برائے لاٹ:</span>
+                  <span className="font-mono font-bold">
+                    +{formatPKR(result.brokerFeeTotalPkr)}
+                  </span>
+                </div>
+              )}
 
               {result.bardanaTotalPkr > 0 && (
                 <div className="flex justify-between text-slate-300">
@@ -568,9 +732,9 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
             {/* Calculated Breakdown Across All 4 Periods */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
               {/* Monthly */}
-              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700">
-                <span className="text-[10px] text-slate-400 block font-semibold uppercase">ماہانہ کرایہ (1 Month)</span>
-                <span className="text-base sm:text-lg font-black text-white font-mono">
+              <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                <span className="text-[10px] text-blue-300 block font-bold uppercase">ماہانہ کرایہ (1 Month)</span>
+                <span className="text-base sm:text-lg font-black text-blue-400 font-mono">
                   {formatPKR(rent1Month)}
                 </span>
                 <span className="text-[10px] text-amber-400 block mt-0.5">
@@ -579,8 +743,8 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               </div>
 
               {/* Quarterly (3 Months) */}
-              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-amber-500/30">
-                <span className="text-[10px] text-amber-300 block font-semibold uppercase">سہ ماہی کرایہ (3 Months)</span>
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                <span className="text-[10px] text-amber-300 block font-bold uppercase">سہ ماہی کرایہ (3 Months)</span>
                 <span className="text-base sm:text-lg font-black text-amber-400 font-mono">
                   {formatPKR(rent3Months)}
                 </span>
@@ -590,8 +754,8 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               </div>
 
               {/* Half-Yearly (6 Months) */}
-              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-purple-500/30">
-                <span className="text-[10px] text-purple-300 block font-semibold uppercase">چھ ماہی کرایہ (6 Months)</span>
+              <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/30">
+                <span className="text-[10px] text-purple-300 block font-bold uppercase">چھ ماہی کرایہ (6 Months)</span>
                 <span className="text-base sm:text-lg font-black text-purple-400 font-mono">
                   {formatPKR(rent6Months)}
                 </span>
@@ -601,8 +765,8 @@ ${bardanaPerBag > 0 ? `📦 باردانہ: ₨ ${Math.round(result.bardanaTotal
               </div>
 
               {/* Yearly (12 Months) */}
-              <div className="p-3.5 rounded-xl bg-slate-800/80 border border-emerald-500/30">
-                <span className="text-[10px] text-emerald-300 block font-semibold uppercase">سالانہ کرایہ (12 Months)</span>
+              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                <span className="text-[10px] text-emerald-300 block font-bold uppercase">سالانہ کرایہ (12 Months)</span>
                 <span className="text-base sm:text-lg font-black text-emerald-400 font-mono">
                   {formatPKR(rent12Months)}
                 </span>

@@ -82,6 +82,9 @@ export interface StockBatch {
   totalBilledPurchasePkr: number; // Net paid to seller
   bardanaCostPkr: number; // Bags cost
   laborCostPkr: number; // Palladari / Tulai / Mazdoori
+  kirayaCostPkr?: number; // Carriage / Freight from Mandi to Godam (کرایہ منڈی تا گودام)
+  commissionPkr?: number; // Commission on maal (کمیشن برائے مال)
+  brokerFeePkr?: number; // Broker fee on maal laat (بروکر / دلالی فیس برائے مال لاٹ)
   totalInvestedPkr: number; // Total landed cost
   effectiveCostPerMund: number; // Landed cost / physical munds
   notes: string;

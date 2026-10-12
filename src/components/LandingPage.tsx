@@ -21,6 +21,7 @@ import {
   Award,
   Globe,
   Lock,
+  LogIn,
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -46,32 +47,32 @@ export function LandingPage({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="min-h-screen flex flex-col font-sans">
       {/* 1. Promotional Header */}
-      <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 h-14 sm:h-20 flex items-center justify-between gap-2">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
-              <Wheat className="w-6 h-6" />
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
+            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-md shadow-amber-500/20 shrink-0">
+              <Wheat className="w-4 h-4 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg sm:text-xl font-extrabold tracking-tight text-white">
-                  MandiStockia
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm sm:text-xl font-black tracking-tight text-white whitespace-nowrap">
+                  Mandi<span className="text-amber-400">Stockia</span>
                 </span>
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <span className="text-[9px] sm:text-xs font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 hidden md:inline-block shrink-0">
                   منڈی منیجر
                 </span>
               </div>
-              <p className="text-[10px] sm:text-xs text-slate-400 hidden sm:block">
+              <p className="text-[10px] sm:text-xs text-slate-400 hidden lg:block truncate">
                 پاکستان غلہ منڈی انوینٹری، آڑھتی ڈائری و ڈھلتا حساب کتاب
               </p>
             </div>
           </div>
 
           {/* Nav Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-6 text-xs font-semibold text-slate-300">
             <a href="#features" className="hover:text-amber-400 transition-colors">
               خصوصیات
             </a>
@@ -89,36 +90,36 @@ export function LandingPage({
             </a>
           </nav>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Action Buttons (Strictly single-line, compact on small phones) */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {isLoggedIn ? (
               <button
                 onClick={onGoToApp}
-                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition-all active:scale-95 whitespace-nowrap cursor-pointer"
               >
-                <span>اپنے ڈیش بورڈ پر جائیں</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>ڈیش بورڈ</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             ) : (
               <>
                 <button
                   onClick={onEnterDemo}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-bold transition-all hover:text-amber-400"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-bold transition-all hover:text-amber-400 whitespace-nowrap cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                   <span>لائیو ڈیمو</span>
                 </button>
                 <button
                   onClick={() => onOpenAuth('login')}
-                  className="px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition-colors"
+                  className="px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition-colors whitespace-nowrap cursor-pointer"
                 >
                   لاگ ان
                 </button>
                 <button
                   onClick={() => onOpenAuth('signup')}
-                  className="flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/20 hover:from-amber-400 hover:to-amber-500 transition-all active:scale-95"
+                  className="flex items-center justify-center px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs sm:text-sm shadow-md shadow-amber-500/20 hover:from-amber-400 hover:to-amber-500 transition-all active:scale-95 whitespace-nowrap shrink-0 cursor-pointer"
                 >
-                  <span>مفت شروع کریں</span>
+                  <span>شروع کریں</span>
                 </button>
               </>
             )}
@@ -127,20 +128,20 @@ export function LandingPage({
       </header>
 
       {/* 2. Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 sm:pt-20 sm:pb-28">
+      <section className="relative overflow-hidden pt-4 pb-8 sm:pt-10 sm:pb-14">
         {/* Background glow effects */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 sm:w-[600px] sm:h-[600px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-[600px] sm:h-[600px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-60 h-60 sm:w-80 sm:h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 text-center space-y-3.5 sm:space-y-6">
           {/* Top Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/90 border border-amber-500/30 text-amber-400 text-xs sm:text-sm font-semibold shadow-inner">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>پاکستان کی پہلی مستند غلہ منڈی و گودام سافٹ ویئر ایپ</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-slate-800/90 border border-amber-500/30 text-amber-400 text-[10px] sm:text-sm font-semibold shadow-inner max-w-full">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="truncate">پاکستان کی پہلی غلہ منڈی و گودام ایپ</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight max-w-4xl mx-auto">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-snug sm:leading-tight max-w-4xl mx-auto px-1">
             غلہ منڈی کا حساب کتاب، دکان وزٹ اور گودام ڈھلتا اب{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-emerald-400">
               ڈیجیٹل اور خودکار
@@ -148,64 +149,78 @@ export function LandingPage({
           </h1>
 
           {/* Description */}
-          <p className="text-sm sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xs sm:text-base lg:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed px-1">
             گندم، دھان (چاول)، مکئی اور سرھوں کا من و بوری حساب، 1.0 تا 2.5 کلو فی بوری ڈھلتا کٹوتی، روزانہ آڑھتی دکان وزٹ ڈائری، اور اناج فروخت پر فوری نفع نقصان ٹریکر۔
           </p>
 
           {/* CTA Group */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 pt-1 w-full max-w-xs sm:max-w-none mx-auto">
             <button
               onClick={() => onOpenAuth('signup')}
-              className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-xl shadow-amber-500/25 active:scale-95 transition-all cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 sm:px-7 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-base shadow-lg shadow-amber-500/25 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
             >
-              <span>مفت اکاؤنٹ بنائیں اور استعمال شروع کریں</span>
-              <ArrowRight className="w-5 h-5" />
+              <span>مفت اکاؤنٹ بنائیں اور شروع کریں</span>
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
             </button>
 
             <button
               onClick={onEnterDemo}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-white font-bold text-sm sm:text-base shadow-lg transition-all active:scale-95 cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-white font-bold text-xs sm:text-base shadow-md transition-all active:scale-95 cursor-pointer whitespace-nowrap"
             >
-              <Sparkles className="w-4 h-4 text-amber-400" />
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
               <span>لائیو ڈیمو چلا کر دیکھیں</span>
             </button>
           </div>
 
           {/* Trust Highlights */}
-          <div className="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-            <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-              <div className="text-xl sm:text-2xl font-black text-amber-400">50,000+</div>
-              <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">بوریاں ریکارڈڈ</div>
+          <div className="pt-4 sm:pt-6 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-4xl mx-auto">
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
+              <div className="text-base sm:text-2xl font-black text-amber-400">50,000+</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">بوریاں ریکارڈڈ</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-              <div className="text-xl sm:text-2xl font-black text-emerald-400">100%</div>
-              <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">ڈھلتا کٹوتی درستی</div>
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
+              <div className="text-base sm:text-2xl font-black text-emerald-400">100%</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">ڈھلتا کٹوتی درستی</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-              <div className="text-xl sm:text-2xl font-black text-blue-400">40 کلو من</div>
-              <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">پاکستانی منڈی فارمولا</div>
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
+              <div className="text-base sm:text-2xl font-black text-blue-400">40 کلو من</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">منڈی فارمولا</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
-              <div className="text-xl sm:text-2xl font-black text-purple-400">1-کلک</div>
-              <div className="text-[11px] sm:text-xs text-slate-400 mt-0.5">پی ڈی ایف رسید و کھاتہ</div>
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
+              <div className="text-base sm:text-2xl font-black text-purple-400">1-کلک</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">پی ڈی ایف رسید</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 3. Core Features Section */}
-      <section id="features" className="py-16 sm:py-24 bg-slate-900/50 border-t border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-              جامع خصوصیات
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              ہر آڑھتی، گودام دار اور غلہ بیوپاری کی تمام ضروریات کا حل
+      <section id="features" className="py-7 sm:py-10 bg-slate-900/50 border-t border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+          <div className="text-center max-w-4xl mx-auto space-y-2.5 sm:space-y-3">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-emerald-500/15 to-amber-500/20 border border-amber-500/40 text-amber-300 text-xs sm:text-sm font-extrabold shadow-sm">
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>جامع منڈی سسٹم و خودکار ڈیجیٹل کھاتہ</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-5xl lg:text-5xl font-black text-white tracking-tight leading-tight sm:leading-snug">
+              ہر آڑھتی، گودام دار اور غلہ بیوپاری کی{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-emerald-400 drop-shadow-sm">
+                تمام ضروریات کا حل
+              </span>
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              روایتی کاپی اور پرچی کے بجائے موبائل اور لیپ ٹاپ پر تیز ترین اور محفوظ ترین کھاتہ۔
-            </p>
+
+            <div className="relative inline-block mt-2 w-full max-w-3xl">
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500/20 to-emerald-500/20 rounded-2xl blur-md opacity-70" />
+              <div className="relative px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-slate-900/95 border border-amber-500/35 shadow-xl mx-auto">
+                <p className="text-base sm:text-xl lg:text-2xl font-extrabold text-amber-300 sm:text-amber-200 leading-relaxed tracking-wide">
+                  روایتی کاپی اور پرچی کے بجائے موبائل اور لیپ ٹاپ پر تیز ترین اور محفوظ ترین کھاتہ۔
+                </p>
+                <p className="text-xs sm:text-sm text-slate-300 mt-1.5 font-medium">
+                  اب کوئی سودا، بوری کا وزن یا ڈھلتا کٹوتی کا حساب غائب یا غلط نہیں ہوگا!
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -279,9 +294,9 @@ export function LandingPage({
       </section>
 
       {/* 4. Interactive Preview Tabs */}
-      <section id="preview" className="py-16 sm:py-24 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+      <section id="preview" className="py-7 sm:py-10 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
             <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               لائیو انٹرفیس جھلک
             </span>
@@ -479,9 +494,9 @@ export function LandingPage({
       </section>
 
       {/* 5. Commercial Packages & Selling Section */}
-      <section id="pricing" className="py-16 sm:py-24 bg-slate-900/60 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+      <section id="pricing" className="py-7 sm:py-10 bg-slate-900/60 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
               کمرشل پیکیجز
             </span>
@@ -622,9 +637,9 @@ export function LandingPage({
       </section>
 
       {/* 6. Testimonials from Grain Markets */}
-      <section id="testimonials" className="py-16 sm:py-24 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+      <section id="testimonials" className="py-7 sm:py-10 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
               منڈی کا اعتماد
             </span>
@@ -668,9 +683,9 @@ export function LandingPage({
       </section>
 
       {/* 7. FAQ Section */}
-      <section id="faq" className="py-16 sm:py-24 bg-slate-900/40 border-t border-slate-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
-          <div className="text-center space-y-3">
+      <section id="faq" className="py-7 sm:py-10 bg-slate-900/40 border-t border-slate-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-5 sm:space-y-6">
+          <div className="text-center space-y-2">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
               عام سوالات و جوابات
             </span>
@@ -726,7 +741,7 @@ export function LandingPage({
       </section>
 
       {/* 8. Bottom CTA Banner */}
-      <section className="py-14 sm:py-20 bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 text-slate-950">
+      <section className="py-8 sm:py-12 bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 text-slate-950">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6">
           <h2 className="text-2xl sm:text-4xl font-black tracking-tight">
             آج ہی اپنا غلہ منڈی ڈیجیٹل کھاتہ شروع کریں!
@@ -752,21 +767,23 @@ export function LandingPage({
       </section>
 
       {/* 9. Landing Footer */}
-      <footer className="py-8 bg-slate-950 border-t border-slate-900 text-slate-500 text-xs">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+      <footer className="py-6 sm:py-8 bg-slate-950 border-t border-slate-900 text-slate-500 text-xs">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center justify-center gap-2">
             <span className="font-bold text-slate-300">MandiStockia</span>
             <span>•</span>
             <span>پاکستان منڈی انوینٹری پورٹل</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex items-center justify-center gap-3 text-[11px]">
+            {/* Login button: hidden on mobile screens per user request */}
             <button
               onClick={() => onOpenAuth('login')}
-              className="hover:text-amber-400 transition-colors"
+              className="hidden sm:inline-flex text-slate-400 hover:text-amber-400 transition-colors font-medium items-center gap-1.5 cursor-pointer"
             >
-              سپر ایڈمن لاگ ان
+              <LogIn className="w-3.5 h-3.5 text-amber-400" />
+              <span>لاگ ان (Sign In)</span>
             </button>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <span>© 2026 MandiStockia. تمام حقوق محفوظ ہیں۔</span>
           </div>
         </div>

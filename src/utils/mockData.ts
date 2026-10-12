@@ -216,8 +216,11 @@ export const INITIAL_STOCK_BATCHES: StockBatch[] = [
     totalBilledPurchasePkr: 1837500, // 490 * 3750
     bardanaCostPkr: 40000, // Rs. 100 per bori
     laborCostPkr: 12000, // Rs. 30 per bori palladari
-    totalInvestedPkr: 1889500,
-    effectiveCostPerMund: 3779,
+    kirayaCostPkr: 16000, // Rs. 40 per bori carriage from mandi to godam
+    commissionPkr: 18375, // 1% commission on maal
+    brokerFeePkr: 4000, // Rs. 10 per bori broker fee on lot
+    totalInvestedPkr: 1927875,
+    effectiveCostPerMund: 3855.75,
     notes: 'Purchased during early post-harvest slump. Stored clean on wooden pallets with fumigation tablets.',
     createdAt: Date.now() - 3600000 * 24 * 15,
   },
@@ -242,8 +245,11 @@ export const INITIAL_STOCK_BATCHES: StockBatch[] = [
     totalBilledPurchasePkr: 1652062,
     bardanaCostPkr: 30000,
     laborCostPkr: 9000,
-    totalInvestedPkr: 1691062,
-    effectiveCostPerMund: 4509.5,
+    kirayaCostPkr: 12000,
+    commissionPkr: 16520,
+    brokerFeePkr: 3000,
+    totalInvestedPkr: 1722582,
+    effectiveCostPerMund: 4593.5,
     notes: 'Premium export grade paddy. Holding until mid-winter when mill demand peaks.',
     createdAt: Date.now() - 3600000 * 24 * 8,
   },
@@ -268,8 +274,11 @@ export const INITIAL_STOCK_BATCHES: StockBatch[] = [
     totalBilledPurchasePkr: 1382250,
     bardanaCostPkr: 45000,
     laborCostPkr: 15000,
-    totalInvestedPkr: 1442250,
-    effectiveCostPerMund: 2307.6,
+    kirayaCostPkr: 20000,
+    commissionPkr: 13822,
+    brokerFeePkr: 5000,
+    totalInvestedPkr: 1481072,
+    effectiveCostPerMund: 2369.7,
     notes: 'Heavy dhalta of 1.5kg negotiated due to 14% moisture. Aerated and dried.',
     createdAt: Date.now() - 3600000 * 24 * 22,
   },

@@ -249,7 +249,7 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
               Live Real-Time
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-200 font-medium mt-1 leading-relaxed">
             Real-time tracking of total sales, total deductions in PKR (₨), and comprehensive inventory for all crops.
           </p>
         </div>
@@ -257,16 +257,16 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
         <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
           <button
             onClick={handleExportPdf}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition-colors cursor-pointer active:scale-95 shadow-sm"
-            title="Download PDF document of financial summary & inventory report"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 border border-amber-400 transition-all cursor-pointer active:scale-95 shadow-md shadow-amber-500/20"
+            title="رپورٹ ڈاؤن لوڈ"
           >
-            <FileDown className="w-4 h-4 text-amber-400" />
-            <span>PDF رپورٹ ڈاؤن لوڈ (Export PDF)</span>
+            <FileDown className="w-4 h-4 text-slate-950 shrink-0 stroke-[2.5]" />
+            <span className="whitespace-nowrap font-black">رپورٹ ڈاؤن لوڈ</span>
           </button>
 
           <button
             onClick={handleCopyWhatsApp}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition-colors cursor-pointer active:scale-95"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 transition-all cursor-pointer active:scale-95 shadow-md shadow-emerald-600/20"
           >
             {copied ? (
               <>
@@ -285,7 +285,7 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
 
       {/* Sample Entry Guidance Banner (If a sample batch or visit exists) */}
       {(batches.some((b) => b.isSample) || visits.some((v) => v.isSample)) && (
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-purple-900/30 to-slate-900 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+        <div className="p-4 rounded-2xl bg-slate-900/95 border border-purple-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
               <Sparkles className="w-5 h-5" />
@@ -328,7 +328,7 @@ export const CombineOverview: React.FC<CombineOverviewProps> = ({
 
       {/* Fresh Clean Dashboard Welcome (If user has 0 batches and 0 sales) */}
       {batches.length === 0 && sales.length === 0 && (
-        <div className="p-6 sm:p-7 rounded-2xl bg-gradient-to-r from-amber-500/10 via-slate-900 to-emerald-500/10 border border-amber-500/30 text-center space-y-3.5 shadow-xl">
+        <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/95 border border-amber-500/40 text-center space-y-3.5 shadow-xl">
           <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30 shadow-inner">
             <Warehouse className="w-7 h-7" />
           </div>

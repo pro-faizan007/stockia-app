@@ -53,7 +53,7 @@ export const VisitNoteModal: React.FC<VisitNoteModalProps> = ({
   // Volume & Bag Settings (from crop)
   const [quantityBags, setQuantityBags] = useState<number>(initialVisit?.quantityBags || 100);
   const [boriWeightKg, setBoriWeightKg] = useState<number>(
-    initialVisit?.boriWeightKg || selectedCropObj.defaultBoriWeightKg || 40
+    initialVisit?.boriWeightKg || 50
   );
   const [mundWeightKg, setMundWeightKg] = useState<number>(
     initialVisit?.mundWeightKg || selectedCropObj.defaultMundWeightKg || 40
@@ -68,15 +68,14 @@ export const VisitNoteModal: React.FC<VisitNoteModalProps> = ({
   const [status, setStatus] = useState<VisitStatus>(initialVisit?.status || 'visited');
   const [notes, setNotes] = useState<string>(initialVisit?.notes || '');
 
-  // When crop changes, update defaults
+  // When crop changes, update rate & deduction defaults (do not force bori weight)
   const handleCropChange = (newId: string) => {
     setCropId(newId);
     const c = crops.find((x) => x.id === newId);
     if (c && !initialVisit) {
-      setBoriWeightKg(c.defaultBoriWeightKg);
-      setMundWeightKg(c.defaultMundWeightKg);
-      setDeductionBaseKg(c.deductionBaseKg);
-      setDeductionKg(c.deductionKg);
+      setMundWeightKg(c.defaultMundWeightKg || 40);
+      setDeductionBaseKg(c.deductionBaseKg || 50);
+      setDeductionKg(c.deductionKg ?? 1.0);
       setPurchasePricePerUnit(c.currentMarketRatePerMund);
       setSellingPriceInMarketPerMund(c.targetSellRatePerMund);
     }
@@ -414,7 +413,7 @@ export const VisitNoteModal: React.FC<VisitNoteModalProps> = ({
               <div className="flex justify-between items-center mb-1">
                 <label className="text-slate-300 font-semibold text-[11px]">بوری وزن (Kg)</label>
                 <div className="flex items-center gap-1">
-                  {[40, 60, 70].map((w) => (
+                  {[50, 60, 70].map((w) => (
                     <button
                       key={w}
                       type="button"

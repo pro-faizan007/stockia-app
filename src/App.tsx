@@ -273,6 +273,92 @@ export default function App() {
     return () => unsubscribe();
   }, [loadUserData]);
 
+  // Secret URL trigger for Super Admin access via fai-login or fai-admin, and standard user login via #login
+  useEffect(() => {
+    const handleUrlLoginTrigger = () => {
+      const hash = window.location.hash.toLowerCase();
+      const path = window.location.pathname.toLowerCase();
+      const search = window.location.search.toLowerCase();
+
+      const isFaiAdminRoute =
+        hash.includes('fai-login') ||
+        hash.includes('fai-admin') ||
+        path.includes('fai-login') ||
+        path.includes('fai-admin') ||
+        search.includes('fai-login') ||
+        search.includes('fai-admin');
+
+      const isNormalLoginRoute =
+        hash === '#login' ||
+        hash.includes('#login') ||
+        path === '/login' ||
+        search.includes('action=login');
+
+      if (isFaiAdminRoute) {
+        if (currentUser && isUserSuperAdmin(currentUser)) {
+          setShowLandingPage(false);
+          setIsSuperAdminModalOpen(true);
+        } else {
+          setAuthModalMode('login');
+          setIsAuthModalOpen(true);
+        }
+      } else if (isNormalLoginRoute) {
+        setAuthModalMode('login');
+        setIsAuthModalOpen(true);
+      }
+    };
+
+    handleUrlLoginTrigger();
+    window.addEventListener('hashchange', handleUrlLoginTrigger);
+    window.addEventListener('popstate', handleUrlLoginTrigger);
+
+    return () => {
+      window.removeEventListener('hashchange', handleUrlLoginTrigger);
+      window.removeEventListener('popstate', handleUrlLoginTrigger);
+    };
+  }, [currentUser]);
+
+  const handleCloseAuthModal = () => {
+    setIsAuthModalOpen(false);
+    if (
+      window.location.hash.toLowerCase().includes('login') ||
+      window.location.hash.toLowerCase().includes('admin')
+    ) {
+      try {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setIsAuthModalOpen(false);
+    setShowLandingPage(false);
+    const hash = window.location.hash.toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+    const search = window.location.search.toLowerCase();
+    const isFaiRoute =
+      hash.includes('fai-login') ||
+      hash.includes('fai-admin') ||
+      path.includes('fai-login') ||
+      path.includes('fai-admin') ||
+      search.includes('fai-login') ||
+      search.includes('fai-admin');
+
+    if (isFaiRoute) {
+      setIsSuperAdminModalOpen(true);
+    }
+
+    try {
+      if (window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   // When Super Admin switches to another user
   useEffect(() => {
     if (viewingOtherUser) {
@@ -532,7 +618,11 @@ export default function App() {
     return (
       <div
         className={`min-h-screen ${
-          theme === 'light' ? 'light-mode bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'
+          theme === 'light'
+            ? 'light-mode bg-slate-100 text-slate-900'
+            : theme === 'high-contrast'
+            ? 'high-contrast-mode light-mode bg-white text-black'
+            : 'bg-slate-950 text-slate-100'
         } flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200 transition-colors duration-150`}
       >
         <LandingPage
@@ -548,12 +638,29 @@ export default function App() {
 
         <AuthModal
           isOpen={isAuthModalOpen}
-          onClose={() => setIsAuthModalOpen(false)}
+          onClose={handleCloseAuthModal}
           initialMode={authModalMode}
-          onSuccess={() => {
-            setIsAuthModalOpen(false);
+          onSuccess={handleAuthSuccess}
+        />
+
+        {/* Super Admin Modal (if opened via /fai-admin or /fai-login) */}
+        <SuperAdminModal
+          isOpen={isSuperAdminModalOpen}
+          onClose={() => setIsSuperAdminModalOpen(false)}
+          currentViewingUserId={effectiveUserId || ''}
+          onSelectUserToView={(target) => {
+            setViewingOtherUser(target);
+            setIsSuperAdminModalOpen(false);
             setShowLandingPage(false);
           }}
+          onResetToSelf={() => {
+            setViewingOtherUser(null);
+            if (currentUser) {
+              loadUserData(currentUser.uid);
+            }
+            setIsSuperAdminModalOpen(false);
+          }}
+          superAdminEmail={currentUser?.email || SUPER_ADMIN_EMAIL}
         />
       </div>
     );
@@ -562,7 +669,11 @@ export default function App() {
   return (
     <div
       className={`min-h-screen ${
-        theme === 'light' ? 'light-mode bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'
+        theme === 'light'
+          ? 'light-mode bg-slate-100 text-slate-900'
+          : theme === 'high-contrast'
+          ? 'high-contrast-mode light-mode bg-white text-black'
+          : 'bg-slate-950 text-slate-100'
       } flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200 transition-colors duration-150`}
     >
       {/* App Header */}
@@ -818,12 +929,9 @@ export default function App() {
       {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={handleCloseAuthModal}
         initialMode={authModalMode}
-        onSuccess={() => {
-          setIsAuthModalOpen(false);
-          setShowLandingPage(false);
-        }}
+        onSuccess={handleAuthSuccess}
       />
 
       {/* Super Admin Modal */}

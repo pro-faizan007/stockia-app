@@ -169,12 +169,12 @@ export const GodownRentManager: React.FC<GodownRentManagerProps> = ({
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 shadow-lg">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-              <Building2 className="w-6 h-6 text-amber-400" />
+              <Building2 className="w-6 h-6 text-amber-400 shrink-0" />
               <span>گودام کرایہ و اخراجات (Godown Rent & Kiraya)</span>
             </h2>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 whitespace-nowrap text-center inline-flex items-center justify-center shrink-0 leading-tight">
               ماہانہ و سہ ماہی
             </span>
           </div>
@@ -328,36 +328,36 @@ export const GodownRentManager: React.FC<GodownRentManagerProps> = ({
 
         {/* Calculated breakdown table */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2">
-          <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-            <span className="text-[10px] text-slate-400 block">ماہانہ (1 ماہ)</span>
+          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-center">
+            <span className="text-[10px] text-blue-300 font-bold block">ماہانہ (1 ماہ)</span>
             <span className="text-sm font-extrabold text-blue-400 font-mono">
               {formatPKR(Math.round(calcMonthly))}
             </span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-            <span className="text-[10px] text-slate-400 block">سہ ماہی (3 ماہ)</span>
+          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center">
+            <span className="text-[10px] text-amber-300 font-bold block">سہ ماہی (3 ماہ)</span>
             <span className="text-sm font-extrabold text-amber-400 font-mono">
               {formatPKR(Math.round(calcQuarterly))}
             </span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-            <span className="text-[10px] text-slate-400 block">چھ ماہی (6 ماہ)</span>
+          <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-center">
+            <span className="text-[10px] text-purple-300 font-bold block">چھ ماہی (6 ماہ)</span>
             <span className="text-sm font-extrabold text-purple-400 font-mono">
               {formatPKR(Math.round(calcHalfYearly))}
             </span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-            <span className="text-[10px] text-slate-400 block">سالانہ (12 ماہ)</span>
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
+            <span className="text-[10px] text-emerald-300 font-bold block">سالانہ (12 ماہ)</span>
             <span className="text-sm font-extrabold text-emerald-400 font-mono">
               {formatPKR(Math.round(calcYearly))}
             </span>
           </div>
 
-          <div className="col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center">
-            <span className="text-[10px] text-amber-300 block font-semibold">فی بوری ماہانہ کرایہ</span>
+          <div className="col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-center">
+            <span className="text-[10px] text-amber-300 block font-bold">فی بوری ماہانہ کرایہ</span>
             <span className="text-sm font-black text-amber-400 font-mono">
               ₨ {calcCostPerBag.toFixed(1)}/بوری
             </span>
